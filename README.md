@@ -3,4 +3,5 @@
 
 For details, please see branches... <br />
 
-[ex01](https://github.com/Voychek1024/Computer-Graphics/tree/ex01)
+[ex01](https://github.com/Voychek1024/Computer-Graphics/tree/ex01) <br />
+![status](https://img.shields.io/badge/status-still%20working-blue)
