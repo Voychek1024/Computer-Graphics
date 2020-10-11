@@ -7,4 +7,4 @@ For details, please check each folder <br />
 ![status](https://img.shields.io/badge/status-accepted-brightgreen)
 
 [ex02](https://github.com/Voychek1024/Computer-Graphics/tree/main/ex02) <br />
-![status](https://img.shields.io/badge/status-pending-lightgrey)
+![status](https://img.shields.io/badge/status-slow%20process-red)
