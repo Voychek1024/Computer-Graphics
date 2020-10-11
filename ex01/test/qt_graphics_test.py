@@ -36,7 +36,8 @@ class Mytest(QMainWindow):
         dr = Figure_Canvas()
         # 实例化一个FigureCanvas
         dr.test()  # 画图
-        graphicscene = QGraphicsScene()  # 第三步，创建一个QGraphicsScene，因为加载的图形（FigureCanvas）不能直接放到graphicview控件中，必须先放到graphicScene，然后再把graphicscene放到graphicview中
+        graphicscene = QGraphicsScene()  # 第三步，创建一个QGraphicsScene，因为加载的图形（FigureCanvas）不能直接放到graphicview
+        # 控件中，必须先放到graphicScene，然后再把graphicscene放到graphicview中
         graphicscene.addWidget(dr)  # 第四步，把图形放到QGraphicsScene中，注意：图形是作为一个QWidget放到QGraphicsScene中的
         self.graphicview.setScene(graphicscene)  # 第五步，把QGraphicsScene放入QGraphicsView
         self.graphicview.show()  # 最后，调用show方法呈现图形！Voila!!

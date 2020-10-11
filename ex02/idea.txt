@@ -1,0 +1,10 @@
+With Same-Point Detection
+	For Loop:
+		Mouseclick->event push->get coordinates
+		IF Same-Point
+			break
+	do filling
+# TODO: Problems::1.只能绘制10点，2.中间点不能停止绘图
+insight: "do filling"
+	coordinates
+	scan line?
