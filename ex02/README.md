@@ -12,4 +12,5 @@ Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 2.多边形扫描转换与填充算法 —— 未完成 <br />
 3.……
 ### 项目环境
-Python 3.7 or C++（OpenGL）
+Python 3.7 <br />
+PyQt5, matplotlib
