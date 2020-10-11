@@ -8,6 +8,8 @@ Cohen-Sutherland直线裁剪（矩形裁剪窗口） <br />
 Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 
 ## 进度
-pending...
+1.交互式多边形绘图(pyqtGraph?Matplotlib?OpenCV?) —— 未完成 <br />
+2.多边形扫描转换与填充算法 —— 未完成 <br />
+3.……
 ### 项目环境
-N/A
+Python 3.7 or C++（OpenGL）
