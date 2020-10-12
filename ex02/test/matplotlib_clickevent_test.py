@@ -16,7 +16,8 @@ class LineBuilder:
         self.precision = 10
 
     def __call__(self, event):
-        if event.inaxes != self.line.axes: return
+        if event.inaxes != self.line.axes:
+            return
         if self.counter == 0:
             self.xs.append(event.xdata)
             self.ys.append(event.ydata)
@@ -68,5 +69,5 @@ def create_shape_on_image(data, cmap='jet'):
 
 
 img = np.zeros((100, 100, 3), dtype='uint')
-shapes = create_shape_on_image(img)[0]
+shapes = create_shape_on_image(img)
 print(shapes)
