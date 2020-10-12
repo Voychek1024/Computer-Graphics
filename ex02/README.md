@@ -15,7 +15,7 @@ Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 5. Sutherland-Hodgman —— 等待中 <br />
 6. ……
 
-- [x] TODO1: inf error handle <br />
+- [x] TODO1: inf error handle (Horizontal/Vertical)　<br />
 - [ ] TODO2: QIcon display problem <br />
 
 ### 项目环境
