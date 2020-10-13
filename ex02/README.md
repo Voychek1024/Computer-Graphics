@@ -12,7 +12,7 @@ Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 2. 多边形填充算法 —— 已完成，未整合 <br />
 3. 多边形扫描线算法 —— 已完成，未整合 <br />
 4. Cohen-Sutherland —— 已完成，未连接，未整合 <br />
-5. Sutherland-Hodgman —— 检索条目 <br />
+5. Sutherland-Hodgman —— 检索完成，等待中 <br />
 6. GUI设计 —— 等待中 <br />
 
 - [x] TODO1: inf error handle (Horizontal/Vertical)　<br />
