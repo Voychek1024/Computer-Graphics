@@ -126,8 +126,8 @@ def drawScanLine(ax, coordinates: list, ET_):
 
 
 if __name__ == '__main__':
-    # coords = [[random.randint(0, 100), random.randint(0, 100)] for i in range(5)]
-    # coords.append(coords[0])
+    coords = [[random.randint(0, 100), random.randint(0, 100)] for i in range(4)]
+    coords.append(coords[0])
     # coords = [[24, 30], [40, 24], [96, 50], [5, 1], [24, 30]]
     # coords = [[18, 4], [50, 26], [95, 6], [45, 39], [18, 4]]
     print(coords)
