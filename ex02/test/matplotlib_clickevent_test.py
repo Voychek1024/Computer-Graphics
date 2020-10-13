@@ -44,7 +44,7 @@ class LineBuilder:
             self.counter = self.counter + 1
 
 
-def create_shape_on_image(data, cmap='jet'):
+def create_shape_on_image(data):
     def change_shapes(shapes):
         new_shapes = {}
         for i in range(len(shapes)):
