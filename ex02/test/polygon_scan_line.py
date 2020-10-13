@@ -34,7 +34,7 @@ def drawScanLine(ax, coordinates: list, ET_):
     ind, ymax, xofymin, slopeinverse = zip(*ET_)
     print(ind, ymax, xofymin, slopeinverse)
     AEL = []
-
+    # this_ran = False
     for i in range(min(y_), max(y_) + 1):
         y_values = [i, i]
         x_values = [min(x_), max(x_)]
@@ -80,9 +80,23 @@ def drawScanLine(ax, coordinates: list, ET_):
                 if AEL[i][3] == math.inf or AEL[i + 1][3] == math.inf:
                     raise OverflowError
                 if AEL[i][2] > AEL[i + 1][2]:
-                    x_value = [math.ceil(AEL[i + 1][2]), math.floor(AEL[i][2])]
+                    c = AEL[i][2]
+                    """
+                    if c.is_integer():
+                        print("Integer Process:{}->".format(c), end='')
+                        c -= 1
+                        print(c)
+                    """
+                    x_value = [math.ceil(AEL[i + 1][2]), math.floor(c)]
                 else:
-                    x_value = [math.ceil(AEL[i][2]), math.floor(AEL[i + 1][2])]
+                    c = AEL[i + 1][2]
+                    """
+                    if c.is_integer():
+                        print("Integer Process:{}->".format(c), end='')
+                        c -= 1
+                        print(c)
+                    """
+                    x_value = [math.ceil(AEL[i][2]), math.floor(c)]
                 print("plotting...", x_value, y_value)
                 ax.plot(x_value, y_value, c='r')
             except IndexError:
@@ -116,7 +130,6 @@ if __name__ == '__main__':
     # coords.append(coords[0])
     # coords = [[24, 30], [40, 24], [96, 50], [5, 1], [24, 30]]
     # coords = [[18, 4], [50, 26], [95, 6], [45, 39], [18, 4]]
-    coords = [[97, 26], [86, 96], [20, 80], [3, 37], [73, 11], [97, 26]]
     print(coords)
     x, y = zip(*coords)
     fig = plt.figure()
