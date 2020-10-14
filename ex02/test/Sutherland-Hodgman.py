@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 
 
-def drawLine(ax, coordinates: list, _color: str):
+def drawLine_with_color(ax, coordinates: list, _color: str):
     for i in range(len(coordinates) - 1):
         if coordinates[i] != coordinates[i + 1]:
             x_values = [coordinates[i][0], coordinates[i + 1][0]]
@@ -49,9 +49,9 @@ if __name__ == '__main__':
     fig = plt.figure()
     ax1 = fig.add_subplot(111)
     # ax1.gird(True)
-    drawLine(ax1, polygon, 'g')
+    drawLine_with_color(ax1, polygon, 'g')
     polygon.pop(len(polygon)-1)
     polygon_clipped = clip(polygon, clipper)
     polygon_clipped.append(polygon_clipped[0])
-    drawLine(ax1, polygon_clipped, 'r')
+    drawLine_with_color(ax1, polygon_clipped, 'r')
     plt.show()

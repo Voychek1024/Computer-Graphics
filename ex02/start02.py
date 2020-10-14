@@ -330,6 +330,48 @@ def CohenSutherland(xl, xr, yb, yt, x1, y1, x2, y2):
         raise OverflowError
 
 
+def clip(subjectPolygon, clipPolygon):
+    def inside(p):
+        return (cp2[0] - cp1[0]) * (p[1] - cp1[1]) > (cp2[1] - cp1[1]) * (p[0] - cp1[0])
+
+    def computeIntersection():
+        dc = [cp1[0] - cp2[0], cp1[1] - cp2[1]]
+        dp = [s[0] - e[0], s[1] - e[1]]
+        n1 = cp1[0] * cp2[1] - cp1[1] * cp2[0]
+        n2 = s[0] * e[1] - s[1] * e[0]
+        n3 = 1.0 / (dc[0] * dp[1] - dc[1] * dp[0])
+        return [(n1 * dp[0] - n2 * dc[0]) * n3, (n1 * dp[1] - n2 * dc[1]) * n3]
+
+    outputList = subjectPolygon
+    cp1 = clipPolygon[-1]
+
+    for clipVertex in clipPolygon:
+        cp2 = clipVertex
+        inputList = outputList
+        outputList = []
+        s = inputList[-1]
+
+        for subjectVertex in inputList:
+            e = subjectVertex
+            if inside(e):
+                if not inside(s):
+                    outputList.append(computeIntersection())
+                outputList.append(e)
+            elif inside(s):
+                outputList.append(computeIntersection())
+            s = e
+        cp1 = cp2
+    return outputList
+
+
+def drawLine_with_color(ax, coordinates: list, _color: str):
+    for i in range(len(coordinates) - 1):
+        if coordinates[i] != coordinates[i + 1]:
+            x_values = [coordinates[i][0], coordinates[i + 1][0]]
+            y_values = [coordinates[i][1], coordinates[i + 1][1]]
+            ax.plot(x_values, y_values, color=_color)
+
+
 class MainWindow(QMainWindow, Ui_Window_2):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -354,7 +396,6 @@ class MainWindow(QMainWindow, Ui_Window_2):
         # slot connections
         self.pushButton_1.clicked.connect(self.plot_1)
         self.radioButton_3.clicked.connect(self.initmap_1)
-
         self.pushButton_2.clicked.connect(self.plot_2)
 
         self.initUI()
@@ -396,6 +437,8 @@ class MainWindow(QMainWindow, Ui_Window_2):
     def plot_2(self):
         self._static_ax_2.clear()
         if self.radioButton_1.isChecked():
+            # Cohen-Sutherland Algorithm implementation
+            # TODO: fatal bug exists
             try:
                 xmin, xmax, ymin, ymax = [int(self.lineEdit_4.text()), int(self.lineEdit_5.text()),
                                           int(self.lineEdit_6.text()), int(self.lineEdit_7.text())]
@@ -426,6 +469,34 @@ class MainWindow(QMainWindow, Ui_Window_2):
                     continue
             self._static_ax_2.grid(True)
             self.static_canvas_2.draw()
+        elif self.radioButton_2.isChecked():
+            # Sutherland-Hodgman Algorithm implementation
+            self._static_ax_2.clear()
+            try:
+                xmin, xmax, ymin, ymax = [int(self.lineEdit_4.text()), int(self.lineEdit_5.text()),
+                                          int(self.lineEdit_6.text()), int(self.lineEdit_7.text())]
+                coords = (xmin, xmax, ymin, ymax)
+                clipper = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)]
+                polygon = [(random.randint(min(coords) - 50, max(coords) + 50),
+                            random.randint(min(coords) - 50, max(coords) + 50)) for i in range(3)]
+                try:
+                    polygon_clipped = clip(polygon, clipper)
+                    polygon_clipped.append(polygon_clipped[0])
+                    clipper.append(clipper[0])
+                    polygon.append(polygon[0])
+                    drawLine_with_color(self._static_ax_2, polygon, 'g')
+                    drawLine_with_color(self._static_ax_2, polygon_clipped, 'r')
+                    drawLine_with_color(self._static_ax_2, clipper, 'b')
+                except IndexError:
+                    clipper.append(clipper[0])
+                    polygon.append(polygon[0])
+                    drawLine_with_color(self._static_ax_2, polygon, 'g')
+                    drawLine_with_color(self._static_ax_2, clipper, 'b')
+
+                self._static_ax_2.grid(True)
+                self.static_canvas_2.draw()
+            except ValueError:
+                return
 
 
 if __name__ == '__main__':
