@@ -27,7 +27,7 @@ def cohen_sutherland(xmin: float, ymax: float, xmax: float, ymin: float, x1: flo
 
     while (k1 | k2) != 0:
         if (k1 & k2) != 0:
-            return math.inf, math.inf, math.inf, math.inf
+            raise OverflowError
         opt = k1 or k2
         if opt & UPPER:
             x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1)
@@ -55,18 +55,24 @@ def cohen_sutherland(xmin: float, ymax: float, xmax: float, ymin: float, x1: flo
 if __name__ == '__main__':
     fig, ax = plt.subplots(1)
     rect = patches.Rectangle((-0.5, 0), 1.5, 1, linewidth=2, edgecolor='r', facecolor='none', alpha=0.5)
-    x1_, y1_, x2_, y2_ = (-1, -0.5, 2, 2)
+    x1_, y1_, x2_, y2_ = (-100, 0.2, 10.5, 0.5)
     x_values = [x1_, x2_]
     y_values = [y1_, y2_]
     ax.grid(True)
     ax.plot(x_values, y_values, linewidth=2, alpha=0.7, color='b')
     ax.add_patch(rect)
-    x1_, y1_, x2_, y2_ = cohen_sutherland(xmin=-0.5, xmax=1, ymin=0, ymax=1, x1=x1_, y1=y1_, x2=x2_, y2=y2_)
-    # TODO: parameter connection is still go...
-    #   rect(start_point, length, width)->(xmin, xmax, ymin, ymax)
-    #   line(start_point, end_point)->plot(x_values, y_values)
-    #   idea --- make patch movable??
-    x_value = [x1_, x2_]
-    y_value = [y1_, y2_]
-    ax.plot(x_value, y_value, linewidth=2, color='g')
-    plt.show()
+    try:
+        x1_, y1_, x2_, y2_ = cohen_sutherland(xmin=-0.5, xmax=1, ymin=0, ymax=1, x1=x1_, y1=y1_, x2=x2_, y2=y2_)
+        # TODO: parameter connection is still go...
+        #   rect(start_point, length, width)->(xmin, xmax, ymin, ymax)
+        #   line(start_point, end_point)->plot(x_values, y_values)
+        #   idea --- make patch movable??
+        x_value = [x1_, x2_]
+        y_value = [y1_, y2_]
+        ax.plot(x_value, y_value, linewidth=2, color='g')
+        print(x_value, y_value)
+        plt.show()
+    except OverflowError:
+        print("not in area")
+    except RuntimeError:
+        print("Unknown Error")

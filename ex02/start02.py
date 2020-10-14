@@ -2,10 +2,13 @@ import sys
 
 import math
 import random
+from typing import Tuple
+
 import numpy as np
 
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QApplication, QMainWindow
+from matplotlib import patches
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -85,6 +88,7 @@ def create_shape_on_image(widget, ax, data):
                 _new_shapes[i][j, 0] = shapes[i][0][j]
                 _new_shapes[i][j, 1] = shapes[i][1][j]
         return _new_shapes
+
     _ax = ax
     line = ax.imshow(data)
     # _ax.set_xlim(0, data[:, :, 0].shape[1])
@@ -217,6 +221,115 @@ def drawScanLine(ax, coordinates: list, ET_):
                 continue
 
 
+def cohen_sutherland(xmin: float, ymax: float, xmax: float, ymin: float, x1: float, y1: float, x2: float, y2: float
+                     ) -> Tuple[float, float, float, float]:
+    INSIDE, LEFT, RIGHT, LOWER, UPPER = 0, 1, 2, 4, 8
+
+    def _get_clip(xa, ya):
+        p = INSIDE
+        # consider x
+        if xa < xmin:
+            p |= LEFT
+        elif xa > xmax:
+            p |= RIGHT
+        # consider y
+        if ya < ymin:
+            p |= LOWER
+        elif ya > ymax:
+            p |= UPPER
+        return p
+
+    k1 = _get_clip(x1, y1)
+    k2 = _get_clip(x2, y2)
+
+    while (k1 | k2) != 0:
+        if (k1 & k2) != 0:
+            return math.inf, math.inf, math.inf, math.inf
+        opt = k1 or k2
+        if opt & UPPER:
+            x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1)
+            y = ymax
+        elif opt & LOWER:
+            x = x1 + (x2 - x1) * (ymin - y1) / (y2 - y1)
+            y = ymin
+        elif opt & RIGHT:
+            y = y1 + (y2 - y1) * (xmax - x1) / (x2 - x1)
+            x = xmax
+        elif opt & LEFT:
+            y = y1 + (y2 - y1) * (xmin - x1) / (x2 - x1)
+            x = xmin
+        else:
+            raise RuntimeError('Undefined clipping state')
+        if opt == k1:
+            x1, y1 = x, y
+            k1 = _get_clip(x1, y1)
+        elif opt == k2:
+            x2, y2 = x, y
+            k2 = _get_clip(x2, y2)
+    return x1, y1, x2, y2
+
+
+LEFT = 1
+RIGHT = 2
+BOTTOM = 4
+TOP = 8
+
+
+def encode(xl, xr, yb, yt, x, y):
+    c = 0
+    if x < xl:
+        c = c | LEFT
+    if x > xr:
+        c = c | RIGHT
+    if y < yb:
+        c = c | BOTTOM
+    if y > yt:
+        c = c | TOP
+    return c
+
+
+def CohenSutherland(xl, xr, yb, yt, x1, y1, x2, y2):
+    code1 = encode(xl, xr, yb, yt, x1, y1)
+    code2 = encode(xl, xr, yb, yt, x2, y2)
+    outcode = code1
+    x, y = 0, 0
+    area = False
+    while True:
+        if (code2 | code1) == 0:
+            area = True
+            break
+        if (code1 & code2) != 0:
+            break
+        if code1 == 0:
+            outcode = code2
+        if (LEFT & outcode) != 0:
+            x = xl
+            y = y1 + (y2 - y1) * (xl - x1) / (x2 - x1)
+        elif (RIGHT & outcode) != 0:
+            x = xr
+            y = y1 + (y2 - y1) * (xr - x1) / (x2 - x1)
+        elif (BOTTOM & outcode) != 0:
+            y = yb
+            x = x1 + (x2 - x1) * (yb - y1) / (y2 - y1)
+        elif (TOP & outcode) != 0:
+            y = yt
+            x = x1 + (x2 - x1) * (yt - y1) / (y2 - y1)
+        x = int(x)
+        y = int(y)
+        if outcode == code1:
+            x1 = x
+            y1 = y
+            code1 = encode(xl, xr, yb, yt, x, y)
+        else:
+            x2 = x
+            y2 = y
+            code2 = encode(xl, xr, yb, yt, x, y)
+    if area:
+        return x1, y1, x2, y2
+    else:
+        raise OverflowError
+
+
 class MainWindow(QMainWindow, Ui_Window_2):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -241,6 +354,8 @@ class MainWindow(QMainWindow, Ui_Window_2):
         # slot connections
         self.pushButton_1.clicked.connect(self.plot_1)
         self.radioButton_3.clicked.connect(self.initmap_1)
+
+        self.pushButton_2.clicked.connect(self.plot_2)
 
         self.initUI()
 
@@ -277,6 +392,40 @@ class MainWindow(QMainWindow, Ui_Window_2):
             drawScanLine(self._static_ax_1, coords, ET)
             self._static_ax_1.grid(True)
             self.static_canvas_1.draw()
+
+    def plot_2(self):
+        self._static_ax_2.clear()
+        if self.radioButton_1.isChecked():
+            try:
+                xmin, xmax, ymin, ymax = [int(self.lineEdit_4.text()), int(self.lineEdit_5.text()),
+                                          int(self.lineEdit_6.text()), int(self.lineEdit_7.text())]
+            except ValueError:
+                return
+
+            rect = patches.Rectangle((xmin, ymin), abs(xmin - xmax), abs(ymin - ymax), linewidth=2, edgecolor='r',
+                                     facecolor='none', alpha=0.4)
+            self._static_ax_2.add_patch(rect)
+            self._static_ax_2.set_xlim([xmin - 5, xmax + 5])
+            self._static_ax_2.set_ylim([ymin - 5, ymax + 5])
+
+            x_values = [0, 260, 400, 200, 350, 450, 150, 650, 400, 400, 350, 450]
+            y_values = [0, 260, 50, 400, 100, 400, 250, 250, 75, 425, 300, 200]
+
+            for j in range(0, 12, 2):
+                self._static_ax_2.plot([x_values[j], x_values[j + 1]], [y_values[j], y_values[j + 1]], color='b')
+                print("plot line", [x_values[j], x_values[j + 1]], [y_values[j], y_values[j + 1]])
+                try:
+                    print(xmin, xmax, ymin, ymax)
+                    x1_, x2_, y1_, y2_ = CohenSutherland(xmin, xmax, ymin, ymax, x_values[j], y_values[j],
+                                                         x_values[j + 1], y_values[j + 1])
+                    x_value = [x1_, x2_]
+                    y_value = [y1_, y2_]
+
+                except OverflowError:
+                    print("line not in clip area")
+                    continue
+            self._static_ax_2.grid(True)
+            self.static_canvas_2.draw()
 
 
 if __name__ == '__main__':
