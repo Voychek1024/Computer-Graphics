@@ -28,7 +28,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # TODO: bug exists ---- QIcon cannot display when called
 
     def execute_2(self):
-        pass
+        self.close()
+        os.system("python3 ./ex02/start02.py")
 
 
 if __name__ == '__main__':

@@ -16,6 +16,17 @@ from matplotlib.figure import Figure
 from ex02.ex02_ui import *
 
 
+def change_shapes(shapes):
+    _new_shapes = {}
+    for i in range(len(shapes)):
+        l = len(shapes[i][1])
+        _new_shapes[i] = np.zeros((l, 2), dtype='int')
+        for j in range(l):
+            _new_shapes[i][j, 0] = shapes[i][0][j]
+            _new_shapes[i][j, 1] = shapes[i][1][j]
+    return _new_shapes
+
+
 class LineBuilder:
     def __init__(self, line, ax, color, canvas):
         self.line = line
@@ -50,7 +61,7 @@ class LineBuilder:
             self.xs = []
             self.ys = []
             self.counter = 0
-            self.output = list(self.change_shapes(self.shape)[0].tolist())
+            self.output = list(change_shapes(self.shape)[0].tolist())
             print(self.output)
             ET_ = drawLine(self.ax, self.output)
             drawScanLine(self.ax, self.output, ET_)
@@ -67,36 +78,14 @@ class LineBuilder:
             self.line.figure.canvas.draw()
             self.counter = self.counter + 1
 
-    def change_shapes(self, shapes):
-        _new_shapes = {}
-        for i in range(len(shapes)):
-            l = len(shapes[i][1])
-            _new_shapes[i] = np.zeros((l, 2), dtype='int')
-            for j in range(l):
-                _new_shapes[i][j, 0] = shapes[i][0][j]
-                _new_shapes[i][j, 1] = shapes[i][1][j]
-        return _new_shapes
-
 
 def create_shape_on_image(widget, ax, data):
-    def change_shapes(shapes):
-        _new_shapes = {}
-        for i in range(len(shapes)):
-            l = len(shapes[i][1])
-            _new_shapes[i] = np.zeros((l, 2), dtype='int')
-            for j in range(l):
-                _new_shapes[i][j, 0] = shapes[i][0][j]
-                _new_shapes[i][j, 1] = shapes[i][1][j]
-        return _new_shapes
-
     _ax = ax
     line = ax.imshow(data)
-    # _ax.set_xlim(0, data[:, :, 0].shape[1])
-    # _ax.set_ylim(0, data[:, :, 0].shape[0])
+    _ax.set_xlim(0, data[:, :, 0].shape[1])
+    _ax.set_ylim(0, data[:, :, 0].shape[0])
     linebuilder = LineBuilder(line, ax, 'red', widget)
-    # plt.gca().invert_yaxis()
     widget.draw()
-    new_shapes = change_shapes(linebuilder.shape)
     print(linebuilder.output)
 
 
@@ -111,13 +100,17 @@ def drawLine(ax, coordinates: list):
                 # edge = [ind, ymax, xofymin, slopeinverse]
                 edge = [min(y_values), max(y_values), min([coordinates[i], coordinates[i + 1]], key=lambda t: t[1])[0],
                         1 / ((y_values[1] - y_values[0]) / (x_values[1] - x_values[0]))]
+                if edge not in ET_:
+                    ET_.append(edge)
             except ZeroDivisionError:
                 if (y_values[1] - y_values[0]) == 0:
                     edge = [min(y_values), max(y_values), min(x_values), math.inf]
+                    if edge not in ET_:
+                        ET_.append(edge)
                 elif (x_values[1] - x_values[0]) == 0:
                     edge = [min(y_values), max(y_values), min(x_values), 0]
-            if edge not in ET_:
-                ET_.append(edge)
+                    if edge not in ET_:
+                        ET_.append(edge)
         else:
             continue
     ET_.sort()
@@ -130,7 +123,6 @@ def drawScanLine(ax, coordinates: list, ET_):
     ind, ymax, xofymin, slopeinverse = zip(*ET_)
     print(ind, ymax, xofymin, slopeinverse)
     AEL = []
-    # this_ran = False
     for i in range(min(y_), max(y_) + 1):
         y_values = [i, i]
         x_values = [min(x_), max(x_)]
@@ -149,7 +141,6 @@ def drawScanLine(ax, coordinates: list, ET_):
             for j in range(np.size(b)):
                 print("j:{},a:{}".format(j, b[0][j]))
                 try:
-                    # AEL = np.delete(np.array(AEL), b[0]).tolist()
                     AEL.pop(b[0][j] - self_iter)
                     ymax = np.delete(ymax, b)
                     print(ymax)
@@ -177,21 +168,9 @@ def drawScanLine(ax, coordinates: list, ET_):
                     raise OverflowError
                 if AEL[i][2] > AEL[i + 1][2]:
                     c = AEL[i][2]
-                    """
-                    if c.is_integer():
-                        print("Integer Process:{}->".format(c), end='')
-                        c -= 1
-                        print(c)
-                    """
                     x_value = [math.ceil(AEL[i + 1][2]), math.floor(c)]
                 else:
                     c = AEL[i + 1][2]
-                    """
-                    if c.is_integer():
-                        print("Integer Process:{}->".format(c), end='')
-                        c -= 1
-                        print(c)
-                    """
                     x_value = [math.ceil(AEL[i][2]), math.floor(c)]
                 print("plotting...", x_value, y_value)
                 ax.plot(x_value, y_value, c='r')
@@ -244,7 +223,7 @@ def cohen_sutherland(xmin: float, ymax: float, xmax: float, ymin: float, x1: flo
 
     while (k1 | k2) != 0:
         if (k1 & k2) != 0:
-            return math.inf, math.inf, math.inf, math.inf
+            raise OverflowError
         opt = k1 or k2
         if opt & UPPER:
             x = x1 + (x2 - x1) * (ymax - y1) / (y2 - y1)
@@ -269,65 +248,11 @@ def cohen_sutherland(xmin: float, ymax: float, xmax: float, ymin: float, x1: flo
     return x1, y1, x2, y2
 
 
-LEFT = 1
-RIGHT = 2
-BOTTOM = 4
-TOP = 8
-
-
-def encode(xl, xr, yb, yt, x, y):
-    c = 0
-    if x < xl:
-        c = c | LEFT
-    if x > xr:
-        c = c | RIGHT
-    if y < yb:
-        c = c | BOTTOM
-    if y > yt:
-        c = c | TOP
-    return c
-
-
-def CohenSutherland(xl, xr, yb, yt, x1, y1, x2, y2):
-    code1 = encode(xl, xr, yb, yt, x1, y1)
-    code2 = encode(xl, xr, yb, yt, x2, y2)
-    outcode = code1
-    x, y = 0, 0
-    area = False
-    while True:
-        if (code2 | code1) == 0:
-            area = True
-            break
-        if (code1 & code2) != 0:
-            break
-        if code1 == 0:
-            outcode = code2
-        if (LEFT & outcode) != 0:
-            x = xl
-            y = y1 + (y2 - y1) * (xl - x1) / (x2 - x1)
-        elif (RIGHT & outcode) != 0:
-            x = xr
-            y = y1 + (y2 - y1) * (xr - x1) / (x2 - x1)
-        elif (BOTTOM & outcode) != 0:
-            y = yb
-            x = x1 + (x2 - x1) * (yb - y1) / (y2 - y1)
-        elif (TOP & outcode) != 0:
-            y = yt
-            x = x1 + (x2 - x1) * (yt - y1) / (y2 - y1)
-        x = int(x)
-        y = int(y)
-        if outcode == code1:
-            x1 = x
-            y1 = y
-            code1 = encode(xl, xr, yb, yt, x, y)
-        else:
-            x2 = x
-            y2 = y
-            code2 = encode(xl, xr, yb, yt, x, y)
-    if area:
-        return x1, y1, x2, y2
-    else:
-        raise OverflowError
+def clip_line(_xmin, _xmax, _ymin, _ymax, x1, y1, x2, y2):
+    _x1, _y1, _x2, _y2 = cohen_sutherland(xmin=_xmin, xmax=_xmax, ymin=_ymin, ymax=_ymax, x1=x1, y1=y1, x2=x2, y2=y2)
+    _x_value = [_x1, _x2]
+    _y_value = [_y1, _y2]
+    return _x_value, _y_value
 
 
 def clip(subjectPolygon, clipPolygon):
@@ -395,8 +320,11 @@ class MainWindow(QMainWindow, Ui_Window_2):
         self._static_ax_2 = self.static_canvas_2.figure.subplots()
         # slot connections
         self.pushButton_1.clicked.connect(self.plot_1)
-        self.radioButton_3.clicked.connect(self.initmap_1)
         self.pushButton_2.clicked.connect(self.plot_2)
+        self.radioButton_3.clicked.connect(self.initmap_1)
+        self.radioButton_4.clicked.connect(self.disable_1)
+        self.radioButton_1.clicked.connect(self.disable_2)
+        self.radioButton_2.clicked.connect(self.disable_2)
 
         self.initUI()
 
@@ -405,7 +333,29 @@ class MainWindow(QMainWindow, Ui_Window_2):
         self.setWindowIcon(QIcon("02.png"))
         self.show()
 
+    def disable_1(self):
+        self.lineEdit_4.setEnabled(False)
+        self.lineEdit_5.setEnabled(False)
+        self.lineEdit_6.setEnabled(False)
+        self.lineEdit_7.setEnabled(False)
+        self.pushButton_2.setEnabled(False)
+        self.lineEdit_1.setEnabled(True)
+        self.lineEdit_2.setEnabled(True)
+        self.pushButton_1.setEnabled(True)
+
+    def disable_2(self):
+        self.lineEdit_1.setEnabled(False)
+        self.lineEdit_2.setEnabled(False)
+        self.lineEdit_4.setEnabled(True)
+        self.lineEdit_5.setEnabled(True)
+        self.lineEdit_6.setEnabled(True)
+        self.lineEdit_7.setEnabled(True)
+        self.pushButton_1.setEnabled(False)
+        self.pushButton_2.setEnabled(True)
+
     def initmap_1(self):
+        # Interactive Plotting
+        self.disable_1()
         self._static_ax_1.clear()
         img = np.full((100, 100, 3), 255, dtype='uint')
         create_shape_on_image(self.static_canvas_1, self._static_ax_1, img)
@@ -415,14 +365,13 @@ class MainWindow(QMainWindow, Ui_Window_2):
     def plot_1(self):
         """
         plotting template: plot following widget draw(to update)
-        t = np.linspace(0, 10, 501)
-        self._static_ax_1.plot(t, np.tan(t), ".-")
+        self._static_ax_1.plot(...)
         self.static_canvas_1.draw()
-        self._static_ax_2.plot(t, np.sin(t), "*-")
-        self.static_canvas_2.draw()
         """
-        self._static_ax_1.clear()
         if self.radioButton_4.isChecked():
+            # Scan Line Filling Algorithm implementation
+            # TODO: bug fix --- canvas size not fixed when toggled radioButton_3 first
+            self._static_ax_1.clear()
             try:
                 vertices, coord_range = [int(self.lineEdit_1.text()), int(self.lineEdit_2.text())]
             except ValueError:
@@ -438,37 +387,34 @@ class MainWindow(QMainWindow, Ui_Window_2):
         self._static_ax_2.clear()
         if self.radioButton_1.isChecked():
             # Cohen-Sutherland Algorithm implementation
-            # TODO: fatal bug exists
             try:
                 xmin, xmax, ymin, ymax = [int(self.lineEdit_4.text()), int(self.lineEdit_5.text()),
                                           int(self.lineEdit_6.text()), int(self.lineEdit_7.text())]
+                coords = (xmin, xmax, ymin, ymax)
+                clipper = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax), (xmin, ymin)]
+                drawLine_with_color(self._static_ax_2, clipper, 'r')
+                for i in range(10):
+                    print("draw{}".format(i))
+                    x1_, y1_, x2_, y2_ = (random.randint(min(coords) - 50, max(coords) + 50) for j in range(4))
+                    x_values = [x1_, x2_]
+                    y_values = [y1_, y2_]
+                    self._static_ax_2.plot(x_values, y_values, linewidth=2, alpha=0.7, color='b')
+                    try:
+                        x_value, y_value = clip_line(xmin, xmax, ymin, ymax, x1_, y1_, x2_, y2_)
+                        self._static_ax_2.plot(x_value, y_value, linewidth=2, color='g')
+                        print(x_value, y_value)
+                        continue
+                    except OverflowError:
+                        print("not in area")
+                        continue
+                    except RuntimeError:
+                        print("Unknown Error")
+                        continue
+                self._static_ax_2.grid(True)
+                self.static_canvas_2.draw()
             except ValueError:
                 return
 
-            rect = patches.Rectangle((xmin, ymin), abs(xmin - xmax), abs(ymin - ymax), linewidth=2, edgecolor='r',
-                                     facecolor='none', alpha=0.4)
-            self._static_ax_2.add_patch(rect)
-            self._static_ax_2.set_xlim([xmin - 5, xmax + 5])
-            self._static_ax_2.set_ylim([ymin - 5, ymax + 5])
-
-            x_values = [0, 260, 400, 200, 350, 450, 150, 650, 400, 400, 350, 450]
-            y_values = [0, 260, 50, 400, 100, 400, 250, 250, 75, 425, 300, 200]
-
-            for j in range(0, 12, 2):
-                self._static_ax_2.plot([x_values[j], x_values[j + 1]], [y_values[j], y_values[j + 1]], color='b')
-                print("plot line", [x_values[j], x_values[j + 1]], [y_values[j], y_values[j + 1]])
-                try:
-                    print(xmin, xmax, ymin, ymax)
-                    x1_, x2_, y1_, y2_ = CohenSutherland(xmin, xmax, ymin, ymax, x_values[j], y_values[j],
-                                                         x_values[j + 1], y_values[j + 1])
-                    x_value = [x1_, x2_]
-                    y_value = [y1_, y2_]
-
-                except OverflowError:
-                    print("line not in clip area")
-                    continue
-            self._static_ax_2.grid(True)
-            self.static_canvas_2.draw()
         elif self.radioButton_2.isChecked():
             # Sutherland-Hodgman Algorithm implementation
             self._static_ax_2.clear()
