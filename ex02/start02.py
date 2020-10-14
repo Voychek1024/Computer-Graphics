@@ -12,12 +12,9 @@ from matplotlib.figure import Figure
 
 from ex02.ex02_ui import *
 
-global coords_interactive
-
 
 class LineBuilder:
     def __init__(self, line, ax, color, canvas):
-        global coords_interactive
         self.line = line
         self.ax = ax
         self.color = color
