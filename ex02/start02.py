@@ -12,9 +12,12 @@ from matplotlib.figure import Figure
 
 from ex02.ex02_ui import *
 
+global coords_interactive
+
 
 class LineBuilder:
-    def __init__(self, line, ax, color):
+    def __init__(self, line, ax, color, canvas):
+        global coords_interactive
         self.line = line
         self.ax = ax
         self.color = color
@@ -25,6 +28,8 @@ class LineBuilder:
         self.shape_counter = 0
         self.shape = {}
         self.precision = 10
+        self.output = []
+        self.canvas = canvas
 
     def __call__(self, event):
         if event.inaxes != self.line.axes:
@@ -45,39 +50,53 @@ class LineBuilder:
             self.xs = []
             self.ys = []
             self.counter = 0
+            self.output = list(self.change_shapes(self.shape)[0].tolist())
+            print(self.output)
+            ET_ = drawLine(self.ax, self.output)
+            drawScanLine(self.ax, self.output, ET_)
+            self.canvas.draw()
+            self.output = []
+            self.shape_counter = 0
+            self.shape = {}
         else:
             if self.counter != 0:
                 self.xs.append(event.xdata)
                 self.ys.append(event.ydata)
-            self.ax.scatter(self.xs, self.ys, s=120, color=self.color)
+            self.ax.scatter(self.xs, self.ys, s=100, color=self.color)
             self.ax.plot(self.xs, self.ys, color=self.color)
             self.line.figure.canvas.draw()
             self.counter = self.counter + 1
 
-
-def create_shape_on_image(data):
-    def change_shapes(shapes):
-        new_shapes = {}
+    def change_shapes(self, shapes):
+        _new_shapes = {}
         for i in range(len(shapes)):
             l = len(shapes[i][1])
-            new_shapes[i] = np.zeros((l, 2), dtype='int')
+            _new_shapes[i] = np.zeros((l, 2), dtype='int')
             for j in range(l):
-                new_shapes[i][j, 0] = shapes[i][0][j]
-                new_shapes[i][j, 1] = shapes[i][1][j]
-        return new_shapes
-    # TODO: Unresolved reference 'plt'
-    #   convert normal call to method call
-    fig = plt.figure()
-    ax = fig.add_subplot(111)
-    ax.set_title('click to include shape markers (10 pixel precision to close the shape)')
+                _new_shapes[i][j, 0] = shapes[i][0][j]
+                _new_shapes[i][j, 1] = shapes[i][1][j]
+        return _new_shapes
+
+
+def create_shape_on_image(widget, ax, data):
+    def change_shapes(shapes):
+        _new_shapes = {}
+        for i in range(len(shapes)):
+            l = len(shapes[i][1])
+            _new_shapes[i] = np.zeros((l, 2), dtype='int')
+            for j in range(l):
+                _new_shapes[i][j, 0] = shapes[i][0][j]
+                _new_shapes[i][j, 1] = shapes[i][1][j]
+        return _new_shapes
+    _ax = ax
     line = ax.imshow(data)
-    ax.set_xlim(0, data[:, :, 0].shape[1])
-    ax.set_ylim(0, data[:, :, 0].shape[0])
-    linebuilder = LineBuilder(line, ax, 'red')
-    plt.gca().invert_yaxis()
-    plt.show()
+    # _ax.set_xlim(0, data[:, :, 0].shape[1])
+    # _ax.set_ylim(0, data[:, :, 0].shape[0])
+    linebuilder = LineBuilder(line, ax, 'red', widget)
+    # plt.gca().invert_yaxis()
+    widget.draw()
     new_shapes = change_shapes(linebuilder.shape)
-    return new_shapes
+    print(linebuilder.output)
 
 
 def drawLine(ax, coordinates: list):
@@ -114,7 +133,7 @@ def drawScanLine(ax, coordinates: list, ET_):
     for i in range(min(y_), max(y_) + 1):
         y_values = [i, i]
         x_values = [min(x_), max(x_)]
-        ax.plot(x_values, y_values, color='b', alpha=0.2)
+        ax.plot(x_values, y_values, color='b', alpha=0.1)
 
     ind = np.array(ind)
     ymax = np.array(ymax)
@@ -224,6 +243,7 @@ class MainWindow(QMainWindow, Ui_Window_2):
         self._static_ax_2 = self.static_canvas_2.figure.subplots()
         # slot connections
         self.pushButton_1.clicked.connect(self.plot_1)
+        self.radioButton_3.clicked.connect(self.initmap_1)
 
         self.initUI()
 
@@ -231,6 +251,13 @@ class MainWindow(QMainWindow, Ui_Window_2):
         self.setWindowTitle("Computer Graphics EX02")
         self.setWindowIcon(QIcon("02.png"))
         self.show()
+
+    def initmap_1(self):
+        self._static_ax_1.clear()
+        img = np.full((100, 100, 3), 255, dtype='uint')
+        create_shape_on_image(self.static_canvas_1, self._static_ax_1, img)
+        self._static_ax_1.grid(True)
+        self.static_canvas_1.draw()
 
     def plot_1(self):
         """
@@ -249,12 +276,10 @@ class MainWindow(QMainWindow, Ui_Window_2):
                 return
             coords = [[random.randint(0, coord_range), random.randint(0, coord_range)] for i in range(vertices)]
             coords.append(coords[0])
-        elif self.radioButton_3.isChecked():
-            pass
-        ET = drawLine(self._static_ax_1, coords)
-        drawScanLine(self._static_ax_1, coords, ET)
-        self._static_ax_1.grid(True)
-        self.static_canvas_1.draw()
+            ET = drawLine(self._static_ax_1, coords)
+            drawScanLine(self._static_ax_1, coords, ET)
+            self._static_ax_1.grid(True)
+            self.static_canvas_1.draw()
 
 
 if __name__ == '__main__':

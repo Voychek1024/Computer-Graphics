@@ -14,11 +14,15 @@ class LineBuilder:
         self.shape_counter = 0
         self.shape = {}
         self.precision = 10
+        self.run_once = False
 
     def __call__(self, event):
+
         if event.inaxes != self.line.axes:
             return
         if self.counter == 0:
+            if self.run_once:
+                self.ax.cla()
             self.xs.append(event.xdata)
             self.ys.append(event.ydata)
         if np.abs(event.xdata - self.xs[0]) <= self.precision and np.abs(
@@ -34,6 +38,7 @@ class LineBuilder:
             self.xs = []
             self.ys = []
             self.counter = 0
+            self.run_once = True
         else:
             if self.counter != 0:
                 self.xs.append(event.xdata)
@@ -62,7 +67,7 @@ def create_shape_on_image(data):
     ax.set_xlim(0, data[:, :, 0].shape[1])
     ax.set_ylim(0, data[:, :, 0].shape[0])
     linebuilder = LineBuilder(line, ax, 'red')
-    plt.gca().invert_yaxis()
+    # plt.gca().invert_yaxis()
     plt.show()
     new_shapes = change_shapes(linebuilder.shape)
     return new_shapes

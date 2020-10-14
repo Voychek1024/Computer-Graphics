@@ -15,7 +15,7 @@ Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 5. Sutherland-Hodgman —— 已完成，未整合 <br />
 6. GUI设计 —— 进行中 <br />
 - [x] matplotlib embedding
-- [ ] interactive polygon plotting
+- [x] interactive polygon plotting
 - [x] random polygon plotting
 - [ ] interactive line/polygon plotting (canvas_2)
 
