@@ -15,6 +15,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.label_4.setText(QDateTime.currentDateTime().toString('yyyy.MM.dd'))
         self.pushButton_1.clicked.connect(self.execute_1)
         self.pushButton_2.clicked.connect(self.execute_2)
+        self.pushButton_3.clicked.connect(self.execute_3)
+        self.pushButton_4.clicked.connect(self.execute_4)
         self.initUI()
 
     def initUI(self):
@@ -30,6 +32,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def execute_2(self):
         self.close()
         os.system("python3 ./ex02/start02.py")
+
+    def execute_3(self):
+        # self.close()
+        pass
+
+    def execute_4(self):
+        # self.close()
+        pass
 
 
 if __name__ == '__main__':

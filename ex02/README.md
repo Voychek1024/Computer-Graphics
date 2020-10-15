@@ -7,7 +7,7 @@
 Cohen-Sutherland直线裁剪（矩形裁剪窗口） <br />
 Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 
-## 进度 (预计10.16日完成)
+## 进度
 1. 交互式多边形绘图(Matplotlib) —— 已完成整合 <br />
 2. 多边形填充算法 —— 已完成整合 <br />
 3. 多边形扫描线算法 —— 已完成整合 <br />
@@ -18,7 +18,7 @@ Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 
 Debug
 - [ ] TODO1: QIcon display problem
-- [ ] TODO2: Canvas size not fixed when toggled radioButton_3 first
+- [x] TODO2: Canvas size not fixed when toggled radioButton_3 first
 
 ### 项目环境
 Python 3.7 <br />

@@ -1,14 +1,11 @@
-import sys
-
 import math
 import random
+import sys
 from typing import Tuple
 
 import numpy as np
-
 from PyQt5.QtGui import QIcon, QIntValidator
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from matplotlib import patches
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
@@ -19,22 +16,22 @@ from ex02.ex02_ui import *
 def change_shapes(shapes):
     _new_shapes = {}
     for i in range(len(shapes)):
-        l = len(shapes[i][1])
-        _new_shapes[i] = np.zeros((l, 2), dtype='int')
-        for j in range(l):
+        _l = len(shapes[i][1])
+        _new_shapes[i] = np.zeros((_l, 2), dtype='int')
+        for j in range(_l):
             _new_shapes[i][j, 0] = shapes[i][0][j]
             _new_shapes[i][j, 1] = shapes[i][1][j]
     return _new_shapes
 
 
 class LineBuilder:
-    def __init__(self, line, ax, color, canvas):
-        self.line = line
+    def __init__(self, ax, color, canvas):
+        self.line = ax
         self.ax = ax
         self.color = color
         self.xs = []
         self.ys = []
-        self.cid = line.figure.canvas.mpl_connect('button_press_event', self)
+        self.cid = ax.figure.canvas.mpl_connect('button_press_event', self)
         self.counter = 0
         self.shape_counter = 0
         self.shape = {}
@@ -81,10 +78,9 @@ class LineBuilder:
 
 def create_shape_on_image(widget, ax, data):
     _ax = ax
-    line = ax.imshow(data)
     _ax.set_xlim(0, data[:, :, 0].shape[1])
     _ax.set_ylim(0, data[:, :, 0].shape[0])
-    linebuilder = LineBuilder(line, ax, 'red', widget)
+    linebuilder = LineBuilder(ax, 'red', widget)
     widget.draw()
     print(linebuilder.output)
 
@@ -354,7 +350,7 @@ class MainWindow(QMainWindow, Ui_Window_2):
         self.pushButton_2.setEnabled(True)
 
     def initmap_1(self):
-        # Interactive Plotting
+        # Interactive Plotting implementation
         self.disable_1()
         self._static_ax_1.clear()
         img = np.full((100, 100, 3), 255, dtype='uint')
@@ -370,7 +366,6 @@ class MainWindow(QMainWindow, Ui_Window_2):
         """
         if self.radioButton_4.isChecked():
             # Scan Line Filling Algorithm implementation
-            # TODO: bug fix --- canvas size not fixed when toggled radioButton_3 first
             self._static_ax_1.clear()
             try:
                 vertices, coord_range = [int(self.lineEdit_1.text()), int(self.lineEdit_2.text())]
@@ -430,9 +425,9 @@ class MainWindow(QMainWindow, Ui_Window_2):
                     polygon_clipped.append(polygon_clipped[0])
                     clipper.append(clipper[0])
                     polygon.append(polygon[0])
-                    drawLine_with_color(self._static_ax_2, polygon, 'g')
-                    drawLine_with_color(self._static_ax_2, polygon_clipped, 'r')
-                    drawLine_with_color(self._static_ax_2, clipper, 'b')
+                    drawLine_with_color(self._static_ax_2, polygon, 'b')
+                    drawLine_with_color(self._static_ax_2, polygon_clipped, 'g')
+                    drawLine_with_color(self._static_ax_2, clipper, 'r')
                 except IndexError:
                     clipper.append(clipper[0])
                     polygon.append(polygon[0])
