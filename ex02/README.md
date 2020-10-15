@@ -14,10 +14,10 @@ Sutherland-Hodgman多边形裁剪（矩形裁剪窗口） <br />
 4. Cohen-Sutherland —— 已完成整合 <br />
 5. Sutherland-Hodgman —— 已完成整合 <br />
 6. GUI设计 —— 已完成 <br />
-7. 程序优化debug —— 进行中
+7. 程序优化debug —— 已完成
 
 Debug
-- [ ] TODO1: QIcon display problem
+- [x] TODO1: QIcon display problem
 - [x] TODO2: Canvas size not fixed when toggled radioButton_3 first
 
 ### 项目环境

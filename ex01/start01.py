@@ -159,7 +159,7 @@ class MainWindow(QMainWindow, Ui_Window_1):
 
     def initUI(self):
         self.setWindowTitle("Computer Graphics EX01")
-        self.setWindowIcon(QIcon("01.png"))
+        self.setWindowIcon(QIcon("ex01/01.png"))
         self.show()
 
     def draw(self):

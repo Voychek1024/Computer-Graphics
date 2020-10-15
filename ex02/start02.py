@@ -326,7 +326,7 @@ class MainWindow(QMainWindow, Ui_Window_2):
 
     def initUI(self):
         self.setWindowTitle("Computer Graphics EX02")
-        self.setWindowIcon(QIcon("02.png"))
+        self.setWindowIcon(QIcon("ex02/02.png"))
         self.show()
 
     def disable_1(self):

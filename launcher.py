@@ -27,7 +27,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def execute_1(self):
         self.close()
         os.system("python3 ./ex01/start01.py")
-        # TODO: bug exists ---- QIcon cannot display when called
 
     def execute_2(self):
         self.close()
