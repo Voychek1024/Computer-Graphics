@@ -55,7 +55,7 @@ def evaluate_bezier(points, n):
 
 if __name__ == '__main__':
     # generate 5 (or any number that you want) random points that we want to fit (or set them youreself)
-    points = np.random.rand(3, 2)
+    points = np.random.rand(2, 2)
 
     # fit the points with Bezier interpolation
     # use 50 points between each consecutive points to draw the curve

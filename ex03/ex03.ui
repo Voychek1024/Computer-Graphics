@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>863</width>
+    <width>861</width>
     <height>731</height>
    </rect>
   </property>
@@ -106,8 +106,8 @@
    <widget class="QLineEdit" name="lineEdit_4">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>630</y>
+      <x>790</x>
+      <y>510</y>
       <width>31</width>
       <height>21</height>
      </rect>
@@ -128,8 +128,8 @@
    <widget class="QLineEdit" name="lineEdit_2">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>600</y>
+      <x>790</x>
+      <y>480</y>
       <width>31</width>
       <height>21</height>
      </rect>
@@ -144,9 +144,9 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>600</y>
-      <width>211</width>
+      <x>590</x>
+      <y>480</y>
+      <width>131</width>
       <height>21</height>
      </rect>
     </property>
@@ -157,17 +157,17 @@
      </font>
     </property>
     <property name="text">
-     <string>Translation Vector:(</string>
+     <string>Translation:(</string>
     </property>
     <property name="alignment">
-     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
     </property>
    </widget>
    <widget class="QLineEdit" name="lineEdit_3">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>630</y>
+      <x>730</x>
+      <y>510</y>
       <width>31</width>
       <height>21</height>
      </rect>
@@ -182,8 +182,8 @@
    <widget class="QLineEdit" name="lineEdit_1">
     <property name="geometry">
      <rect>
-      <x>640</x>
-      <y>600</y>
+      <x>730</x>
+      <y>480</y>
       <width>31</width>
       <height>21</height>
      </rect>
@@ -201,10 +201,10 @@
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>740</x>
-      <y>600</y>
-      <width>101</width>
-      <height>81</height>
+      <x>440</x>
+      <y>630</y>
+      <width>191</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="font">
@@ -214,7 +214,7 @@
      </font>
     </property>
     <property name="text">
-     <string>Initiate</string>
+     <string>Draw Polygon</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_0">
@@ -243,9 +243,9 @@ Experiment 03</string>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>630</y>
-      <width>211</width>
+      <x>590</x>
+      <y>510</y>
+      <width>131</width>
       <height>21</height>
      </rect>
     </property>
@@ -256,7 +256,7 @@ Experiment 03</string>
      </font>
     </property>
     <property name="text">
-     <string>Scaling Vector:(</string>
+     <string>Scaling:(</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -265,9 +265,9 @@ Experiment 03</string>
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>430</x>
-      <y>660</y>
-      <width>211</width>
+      <x>590</x>
+      <y>540</y>
+      <width>131</width>
       <height>21</height>
      </rect>
     </property>
@@ -278,7 +278,7 @@ Experiment 03</string>
      </font>
     </property>
     <property name="text">
-     <string>Rotation Degree:(</string>
+     <string>Rotation:(</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -287,9 +287,9 @@ Experiment 03</string>
    <widget class="QLabel" name="label_8">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>600</y>
-      <width>31</width>
+      <x>830</x>
+      <y>480</y>
+      <width>21</width>
       <height>21</height>
      </rect>
     </property>
@@ -309,9 +309,9 @@ Experiment 03</string>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>720</x>
-      <y>630</y>
-      <width>31</width>
+      <x>830</x>
+      <y>510</y>
+      <width>21</width>
       <height>21</height>
      </rect>
     </property>
@@ -331,8 +331,8 @@ Experiment 03</string>
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>690</x>
-      <y>660</y>
+      <x>760</x>
+      <y>540</y>
       <width>31</width>
       <height>21</height>
      </rect>
@@ -344,7 +344,7 @@ Experiment 03</string>
      </font>
     </property>
     <property name="text">
-     <string>)</string>
+     <string>° )</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
@@ -353,8 +353,8 @@ Experiment 03</string>
    <widget class="QLineEdit" name="lineEdit_5">
     <property name="geometry">
      <rect>
-      <x>650</x>
-      <y>660</y>
+      <x>730</x>
+      <y>540</y>
       <width>31</width>
       <height>21</height>
      </rect>
@@ -375,8 +375,8 @@ Experiment 03</string>
    <widget class="QLabel" name="label_6">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>600</y>
+      <x>770</x>
+      <y>480</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -397,8 +397,8 @@ Experiment 03</string>
    <widget class="QLabel" name="label_7">
     <property name="geometry">
      <rect>
-      <x>670</x>
-      <y>630</y>
+      <x>770</x>
+      <y>510</y>
       <width>21</width>
       <height>21</height>
      </rect>
@@ -435,13 +435,13 @@ Experiment 03</string>
      <string>Clear Canvas</string>
     </property>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QWidget" name="layoutWidget">
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>490</y>
-      <width>401</width>
-      <height>92</height>
+      <y>480</y>
+      <width>141</width>
+      <height>81</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -486,6 +486,264 @@ Experiment 03</string>
      </item>
     </layout>
    </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>600</y>
+      <width>131</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Vertices(≥3):</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_8">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>600</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="inputMask">
+     <string/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>630</y>
+      <width>191</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Initiate</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_12">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>600</y>
+      <width>111</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Range(?-?):</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_9">
+    <property name="geometry">
+     <rect>
+      <x>740</x>
+      <y>600</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="inputMask">
+     <string/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_10">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>600</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="inputMask">
+     <string/>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_13">
+    <property name="geometry">
+     <rect>
+      <x>780</x>
+      <y>600</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>16</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>→</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_14">
+    <property name="geometry">
+     <rect>
+      <x>440</x>
+      <y>570</y>
+      <width>171</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Reference Point:(</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_15">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>570</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>,</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_6">
+    <property name="geometry">
+     <rect>
+      <x>620</x>
+      <y>570</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_16">
+    <property name="geometry">
+     <rect>
+      <x>720</x>
+      <y>570</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>)</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_7">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>570</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="inputMask">
+     <string/>
+    </property>
+    <property name="text">
+     <string>0</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <tabstops>
@@ -499,7 +757,13 @@ Experiment 03</string>
   <tabstop>lineEdit_3</tabstop>
   <tabstop>lineEdit_4</tabstop>
   <tabstop>lineEdit_5</tabstop>
+  <tabstop>lineEdit_6</tabstop>
+  <tabstop>lineEdit_7</tabstop>
+  <tabstop>lineEdit_8</tabstop>
+  <tabstop>lineEdit_9</tabstop>
+  <tabstop>lineEdit_10</tabstop>
   <tabstop>pushButton_3</tabstop>
+  <tabstop>pushButton_4</tabstop>
  </tabstops>
  <resources/>
  <connections/>

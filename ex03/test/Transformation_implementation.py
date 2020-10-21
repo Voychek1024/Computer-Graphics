@@ -25,7 +25,7 @@ def translation(ax, _coords: list, _t_vector: list):
     trans = np.identity(3, dtype=float)
     trans[0][2] = _t_vector[0]
     trans[1][2] = _t_vector[1]
-    trans[2][2] = _t_vector[2]
+    trans[2][2] = 1
     for item in _coords:
         vec = np.append(np.array(item, dtype=float), [1])
         new_vec = trans @ vec
@@ -76,7 +76,7 @@ if __name__ == '__main__':
     ax1 = fig.add_subplot(111)
     ax1.grid(True)
     drawLine(ax1, coords, 'g')
-    trans_coords = translation(ax1, coords, [15, 15, 1])
+    trans_coords = translation(ax1, coords, [15, 15])
     drawLine(ax1, trans_coords, 'y')
     scale_coords = scaling(ax1, coords, [0.5, 0.5], (5, 15))
     drawLine(ax1, scale_coords, 'b')

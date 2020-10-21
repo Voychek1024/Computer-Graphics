@@ -10,7 +10,7 @@ For details, please check each folder <br />
 ![status](https://img.shields.io/badge/status-completed-008080)
 
 [ex03](https://github.com/Voychek1024/Computer-Graphics/tree/main/ex03) (due 10.25) <br />
-![status](https://img.shields.io/badge/status-working(3/5)-yellow)
+![status](https://img.shields.io/badge/status-working(4/5)-yellow)
 
 [final](https://github.com/Voychek1024/Computer-Graphics/tree/main/final) (due 11.13) <br />
 ![status](https://img.shields.io/badge/status-pending-lightgrey)
