@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 
 
 # find the a & b points
+from matplotlib import patches
+from matplotlib.path import Path
+
+
 def get_bezier_coef(points):
     # since the formulas work given that we have n+1 points
     # then n must be this:
@@ -55,19 +59,23 @@ def evaluate_bezier(points, n):
 
 if __name__ == '__main__':
     # generate 5 (or any number that you want) random points that we want to fit (or set them youreself)
-    points = np.random.rand(2, 2)
+    points = np.random.rand(4, 2)
+    points = [(337, 486), (299, 36), (58, 478), (4, 74)]
+    print(points)
 
-    # fit the points with Bezier interpolation
-    # use 50 points between each consecutive points to draw the curve
-    path = evaluate_bezier(points, 50)
+    codes = [
+        Path.MOVETO,
+        Path.CURVE4,
+        Path.CURVE4,
+        Path.CURVE4,
+    ]
 
-    # extract x & y coordinates of points
-    x, y = points[:, 0], points[:, 1]
-    px, py = path[:, 0], path[:, 1]
+    path = Path(points, codes)
+    fig, ax = plt.subplots()
+    patch = patches.PathPatch(path, facecolor='none', lw=2)
+    ax.add_patch(patch)
+    xs, ys = zip(*points)
+    ax.plot(xs, ys, 'x--', lw=2, color='black', ms=10)
 
-    # plot
-    plt.figure(figsize=(11, 8))
-    plt.plot(px, py, 'b-')
-    plt.plot(x, y, 'ro')
-    plt.grid(True)
+    ax.grid(True)
     plt.show()

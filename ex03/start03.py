@@ -150,6 +150,7 @@ class MainWindow(QMainWindow, Ui_Window_3):
         self.lineEdit_7.setEnabled(True)
 
     def plot_1(self):
+        self._static_ax_1.clear()
         pass
 
     def initmap_2(self):

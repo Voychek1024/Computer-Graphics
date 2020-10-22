@@ -1,0 +1,8 @@
+GC0 Pn=Q0
+
+GC1 Pn-1, Pn(Q0), Q1 collinear
+
+GC2 curvature vector
+	GC1
+	Pn-2, Pn-1, Pn(Q0), Q1, Q2 same surface
+	
