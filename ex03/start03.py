@@ -1,16 +1,23 @@
-import math
-import random
 import sys
 
+import math
+import random
 import numpy as np
 
 from PyQt5.QtGui import QIcon, QIntValidator, QDoubleValidator
 from PyQt5.QtWidgets import QApplication, QMainWindow
+
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
 from matplotlib.figure import Figure
 
 from ex03.ex03_ui import *
+
+
+def de_casteljau(coordArr, i, j, _t):
+    if j == 0:
+        return coordArr[i]
+    return de_casteljau(coordArr, i, j - 1, _t) * (1 - _t) + de_casteljau(coordArr, i + 1, j - 1, _t) * _t
 
 
 def drawReference(ax, _item: tuple, _coord: tuple, _type_in_use: str):
@@ -112,7 +119,8 @@ class MainWindow(QMainWindow, Ui_Window_3):
         self.radioButton_1.clicked.connect(self.disable_1)
         self.radioButton_2.clicked.connect(self.disable_2)
         self.radioButton_3.clicked.connect(self.disable_3)
-        self.pushButton_2.clicked.connect(self._static_ax_1.clear)
+        self.pushButton_1.clicked.connect(self.plot_1)
+        self.pushButton_2.clicked.connect(self.initmap_1)
         self.pushButton_3.clicked.connect(self.initmap_2)
         self.pushButton_4.clicked.connect(self.plot_2)
         self.initUI()
@@ -151,7 +159,24 @@ class MainWindow(QMainWindow, Ui_Window_3):
 
     def plot_1(self):
         self._static_ax_1.clear()
-        pass
+        coordArrX = [random.randint(0, 500) for _ in range(4)]
+        coordArrY = [random.randint(0, 500) for _ in range(4)]
+        self._static_ax_1.plot(coordArrX, coordArrY, 'x--', lw=2, color='black', ms=10)
+        positions = []
+        numSteps = 10000
+        for k in range(numSteps):
+            t = float(k) / (numSteps - 1)
+            x = float(de_casteljau(coordArrX, 0, 3, t))
+            y = float(de_casteljau(coordArrY, 0, 3, t))
+            positions.append((x, y))
+        x_value, y_value = zip(*positions)
+        self._static_ax_1.plot(x_value, y_value, lw=2)
+        self._static_ax_1.grid(True)
+        self.static_canvas_1.draw()
+
+    def initmap_1(self):
+        self._static_ax_1.clear()
+        self.static_canvas_1.draw()
 
     def initmap_2(self):
         self._static_ax_2.clear()

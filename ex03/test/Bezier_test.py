@@ -10,28 +10,11 @@ def de_casteljau(coordArr, i, j, _t):
     return de_casteljau(coordArr, i, j - 1, _t) * (1 - _t) + de_casteljau(coordArr, i + 1, j - 1, _t) * _t
 
 
-coordArrX = []
-coordArrY = []
-for k in range(4):
-    x = random.randint(0, 500)
-    y = random.randint(0, 500)
-    coordArrX.append(x)
-    coordArrY.append(y)
-
+coordArrX = [random.randint(0, 500) for _ in range(4)]
+coordArrY = [random.randint(0, 500) for _ in range(4)]
 points = list(zip(coordArrX, coordArrY))
-codes = [
-        Path.MOVETO,
-        Path.CURVE4,
-        Path.CURVE4,
-        Path.CURVE4,
-    ]
-
-path = Path(points, codes)
 fig, ax = plt.subplots()
-patch = patches.PathPatch(path, facecolor='none', lw=2)
-ax.add_patch(patch)
-xs, ys = zip(*points)
-ax.plot(xs, ys, 'x--', lw=2, color='black', ms=10)
+ax.plot(coordArrX, coordArrY, 'x--', lw=2, color='black', ms=10)
 
 positions = []
 
@@ -43,6 +26,6 @@ for k in range(numSteps):
     positions.append((x, y))
 
 x_value, y_value = zip(*positions)
-ax.scatter(x_value, y_value)
+ax.plot(x_value, y_value)
 ax.grid(True)
 plt.show()
