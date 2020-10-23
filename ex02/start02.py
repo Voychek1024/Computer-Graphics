@@ -371,7 +371,7 @@ class MainWindow(QMainWindow, Ui_Window_2):
                 vertices, coord_range = [int(self.lineEdit_1.text()), int(self.lineEdit_2.text())]
             except ValueError:
                 return
-            coords = [[random.randint(0, coord_range), random.randint(0, coord_range)] for i in range(vertices)]
+            coords = [[random.randint(0, coord_range), random.randint(0, coord_range)] for _ in range(vertices)]
             coords.append(coords[0])
             ET = drawLine(self._static_ax_1, coords)
             drawScanLine(self._static_ax_1, coords, ET)
@@ -390,7 +390,7 @@ class MainWindow(QMainWindow, Ui_Window_2):
                 drawLine_with_color(self._static_ax_2, clipper, 'r')
                 for i in range(10):
                     print("draw{}".format(i))
-                    x1_, y1_, x2_, y2_ = (random.randint(min(coords) - 50, max(coords) + 50) for j in range(4))
+                    x1_, y1_, x2_, y2_ = (random.randint(min(coords) - 50, max(coords) + 50) for _ in range(4))
                     x_values = [x1_, x2_]
                     y_values = [y1_, y2_]
                     self._static_ax_2.plot(x_values, y_values, linewidth=2, alpha=0.7, color='b')
@@ -419,7 +419,7 @@ class MainWindow(QMainWindow, Ui_Window_2):
                 coords = (xmin, xmax, ymin, ymax)
                 clipper = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)]
                 polygon = [(random.randint(min(coords) - 50, max(coords) + 50),
-                            random.randint(min(coords) - 50, max(coords) + 50)) for i in range(3)]
+                            random.randint(min(coords) - 50, max(coords) + 50)) for _ in range(3)]
                 try:
                     polygon_clipped = clip(polygon, clipper)
                     polygon_clipped.append(polygon_clipped[0])
