@@ -419,21 +419,20 @@ class MainWindow(QMainWindow, Ui_Window_2):
                 coords = (xmin, xmax, ymin, ymax)
                 clipper = [(xmin, ymin), (xmax, ymin), (xmax, ymax), (xmin, ymax)]
                 polygon = [(random.randint(min(coords) - 50, max(coords) + 50),
-                            random.randint(min(coords) - 50, max(coords) + 50)) for _ in range(3)]
+                            random.randint(min(coords) - 50, max(coords) + 50)) for _ in range(5)]
                 try:
                     polygon_clipped = clip(polygon, clipper)
                     polygon_clipped.append(polygon_clipped[0])
                     clipper.append(clipper[0])
                     polygon.append(polygon[0])
                     drawLine_with_color(self._static_ax_2, polygon, 'b')
-                    drawLine_with_color(self._static_ax_2, polygon_clipped, 'g')
                     drawLine_with_color(self._static_ax_2, clipper, 'r')
+                    drawLine_with_color(self._static_ax_2, polygon_clipped, 'g')
                 except IndexError:
                     clipper.append(clipper[0])
                     polygon.append(polygon[0])
                     drawLine_with_color(self._static_ax_2, polygon, 'g')
                     drawLine_with_color(self._static_ax_2, clipper, 'b')
-
                 self._static_ax_2.grid(True)
                 self.static_canvas_2.draw()
             except ValueError:
