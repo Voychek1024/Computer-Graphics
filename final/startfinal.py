@@ -4,6 +4,10 @@ import sys
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QApplication
 
+from OpenGL.GLUT import *
+from OpenGL.GL import *
+from OpenGL.GLU import *
+
 from final.final_ui import *
 
 

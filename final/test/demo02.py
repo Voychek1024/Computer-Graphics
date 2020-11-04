@@ -1,94 +1,145 @@
-if __name__ == '__build__':
-        raise Exception
-## Texture mapping an image--- derived mainly from texturesurf.c (SGI demo)
-## Notable feature: uses PIL to load a PPM image, which is then texturemapped
-## to a bezier surface, using PyOpenGL.
-## Note: your image needs to be RGBA, and the image
-## dimensions must be powers of two, starting
-## with 64 (ie, 64x64, 128x128, etc)
-## also, I noticed that from certain directions the surface is
-## partially transparent.  is there a bug in my code,
-## or is it the way that OpenGL handles concave surfaces?
-## if you figure it out, let me know.
-## (it may invlve backface culling)
-## Written by David Konerding (dek@cgl.ucsf.edu)
-## You are free to modify and redistribute this code.
-## This version differs from texturesurf.py in that it sends the image as
-## a NumPy array instead of as a string, but that's all.
 import sys
+import math
+
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QApplication, QMessageBox
+from PyQt5.QtOpenGL import QGL, QGLFormat, QGLWidget
+
 try:
-        import Numeric
-except:
-        print "This demo requires the Numeric extension, sorry"
-        sys.exit()
-from Image import *
-from OpenGL.GL import *
-from OpenGL.Tk import *
-## Control points for the bezier surface
-ctrlpoints = [[[ -1.5, -1.5, 4.0], [-0.5, -1.5, 2.0], [0.5, -1.5,
-        -1.0], [1.5, -1.5, 2.0]], [[-1.5, -0.5, 1.0], [-0.5, -0.5, 3.0], [0.5, -0.5,
-        0.0], [1.5, -0.5, -1.0]], [[-1.5, 0.5, 4.0], [-0.5, 0.5, 0.0],[ 0.5, 0.5,
-        3.0], [1.5, 0.5, 4.0]], [[-1.5, 1.5, -2.0], [-0.5, 1.5, -2.0], [0.5, 1.5,
-        0.0], [1.5, 1.5, -1.0]]]
-## Texture control points
-texpts = [[[0.0, 0.0], [0.0, 1.0]], [[1.0, 0.0], [1.0, 1.0]]]
-class Surface:
-        def Display(self, event=None):
-                glClearColor(0.0, 0.0, 0.0, 0)
-                glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-                glCallList(self.list)
-        def SetupWindow(self):
-                self.OglFrame = Frame()
-                self.OglFrame.pack(side = 'top')
-                self.QuitButton = Button(self.OglFrame, {'text':'Quit'})
-                self.QuitButton.bind('<ButtonRelease-1>', sys.exit)
-                self.QuitButton.pack({'side':'top'})
-        def SetupOpenGL(self):
-                self.ogl = Opengl(master=self.OglFrame, width = 500, height = 500, double = 1, depth = 1)
-                self.ogl.pack(side = 'top', expand = 1, fill = 'both')
-                self.ogl.set_centerpoint(0, 0, 0)
-                self.ogl.redraw = self.Display
-## Note: only works for RGBA images where side length is power of 2
-        def MakeImage(self, filename):
-                im = open(filename)
-                self.imageWidth = im.size[0]
-                self.imageHeight = im.size[1]
-                self.image = Numeric.fromstring(im.tostring("raw", "RGBX", 0, -1), Numeric.Int0)
-                self.image = Numeric.reshape(self.image, (self.imageWidth, self.imageHeight, 4))
-## this hunk of code handles the bezier mapping and texture mapping
-        def Surface(self):
-                glDisable(GL_CULL_FACE)
-                glMap2f(GL_MAP2_VERTEX_3, 0, 1, 0, 1, ctrlpoints)
-                glMap2f(GL_MAP2_TEXTURE_COORD_2, 0, 1, 0, 1, texpts)
-                glEnable(GL_MAP2_TEXTURE_COORD_2)
-                glEnable(GL_MAP2_VERTEX_3)
-                glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0)
-                glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
-                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-                glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-                glTexImage2Dub(GL_TEXTURE_2D, 0, 3, 0, GL_RGBA, self.image)
-                glEnable(GL_TEXTURE_2D)
-                glEnable(GL_DEPTH_TEST)
-                glEnable(GL_NORMALIZE)
-                glShadeModel(GL_FLAT)
-                self.list = glGenLists(1)
-                glNewList(self.list, GL_COMPILE)
-                glEvalMesh2(GL_FILL, 0, 20, 0, 20)
-                glEndList()
-        def __init__(self):
-                try:
-                        filename = sys.argv[1]
-                except:
-                        filename = "image.ppm"
-                        sys.stderr.write("usage: <name> ppmfilename\n")
-                        #sys.exit(1)
-                self.SetupWindow()
-                self.MakeImage(filename)
-                self.SetupOpenGL()
-                self.Surface()
-                self.ogl.tkRedraw()
-                self.ogl.mainloop()
+    from OpenGL import GL
+except ImportError:
+    app = QApplication(sys.argv)
+    QMessageBox.critical(None, "OpenGL samplebuffers",
+                         "PyOpenGL must be installed to run this example.")
+    sys.exit(1)
+
+
+class GLWidget(QGLWidget):
+    GL_MULTISAMPLE = 0x809D
+    rot = 0.0
+
+    def __init__(self, parent):
+        super(GLWidget, self).__init__(QGLFormat(QGL.SampleBuffers), parent)
+
+        self.list_ = []
+
+        self.startTimer(40)
+        self.setWindowTitle("Sample Buffers")
+
+    def initializeGL(self):
+        GL.glMatrixMode(GL.GL_PROJECTION)
+        GL.glLoadIdentity()
+        GL.glOrtho(-.5, .5, .5, -.5, -1000, 1000)
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glLoadIdentity()
+        GL.glClearColor(1.0, 1.0, 1.0, 1.0)
+
+        self.makeObject()
+
+    def resizeGL(self, w, h):
+        GL.glViewport(0, 0, w, h)
+
+    def paintGL(self):
+        GL.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT)
+
+        GL.glMatrixMode(GL.GL_MODELVIEW)
+        GL.glPushMatrix()
+        GL.glEnable(GLWidget.GL_MULTISAMPLE)
+        GL.glTranslatef(-0.25, -0.10, 0.0)
+        GL.glScalef(0.75, 1.15, 0.0)
+        GL.glRotatef(GLWidget.rot, 0.0, 0.0, 1.0)
+        GL.glCallList(self.list_)
+        GL.glPopMatrix()
+
+        GL.glPushMatrix()
+        GL.glDisable(GLWidget.GL_MULTISAMPLE)
+        GL.glTranslatef(0.25, -0.10, 0.0)
+        GL.glScalef(0.75, 1.15, 0.0)
+        GL.glRotatef(GLWidget.rot, 0.0, 0.0, 1.0)
+        GL.glCallList(self.list_)
+        GL.glPopMatrix()
+
+        GLWidget.rot += 0.2
+
+        self.qglColor(Qt.black)
+        self.renderText(-0.35, 0.4, 0.0, "Multisampling enabled")
+        self.renderText(0.15, 0.4, 0.0, "Multisampling disabled")
+
+    def timerEvent(self, event):
+        self.update()
+
+    def makeObject(self):
+        trolltechGreen = QColor.fromCmykF(0.40, 0.0, 1.0, 0.0)
+        NumSectors = 15
+        x1 = +0.06
+        y1 = -0.14
+        x2 = +0.14
+        y2 = -0.06
+        x3 = +0.08
+        y3 = +0.00
+        x4 = +0.30
+        y4 = +0.22
+
+        self.list_ = GL.glGenLists(1)
+        GL.glNewList(self.list_, GL.GL_COMPILE)
+
+        for i in range(NumSectors):
+            angle1 = float((i * 2 * math.pi) / NumSectors)
+            x5 = 0.30 * math.sin(angle1)
+            y5 = 0.30 * math.cos(angle1)
+            x6 = 0.20 * math.sin(angle1)
+            y6 = 0.20 * math.cos(angle1)
+
+            angle2 = float(((i + 1) * 2 * math.pi) / NumSectors)
+            x7 = 0.20 * math.sin(angle2)
+            y7 = 0.20 * math.cos(angle2)
+            x8 = 0.30 * math.sin(angle2)
+            y8 = 0.30 * math.cos(angle2)
+
+            self.qglColor(trolltechGreen)
+            self.quad(GL.GL_QUADS, x5, y5, x6, y6, x7, y7, x8, y8)
+            self.qglColor(Qt.black)
+            self.quad(GL.GL_LINE_LOOP, x5, y5, x6, y6, x7, y7, x8, y8)
+
+        self.qglColor(trolltechGreen)
+        self.quad(GL.GL_QUADS, x1, y1, x2, y2, y2, x2, y1, x1)
+        self.quad(GL.GL_QUADS, x3, y3, x4, y4, y4, x4, y3, x3)
+
+        self.qglColor(Qt.black)
+        self.quad(GL.GL_LINE_LOOP, x1, y1, x2, y2, y2, x2, y1, x1)
+        self.quad(GL.GL_LINE_LOOP, x3, y3, x4, y4, y4, x4, y3, x3)
+
+        GL.glEndList()
+
+    def quad(self, primitive, x1, y1, x2, y2, x3, y3, x4, y4):
+        GL.glBegin(primitive)
+
+        GL.glVertex2d(x1, y1)
+        GL.glVertex2d(x2, y2)
+        GL.glVertex2d(x3, y3)
+        GL.glVertex2d(x4, y4)
+
+        GL.glEnd()
+
+
 if __name__ == '__main__':
-        Surface()
+    app = QApplication(sys.argv)
+    f = QGLFormat.defaultFormat()
+    f.setSampleBuffers(True)
+    QGLFormat.setDefaultFormat(f)
+
+    if not QGLFormat.hasOpenGL():
+        QMessageBox.information(None, "OpenGL samplebuffers",
+                                "This system does not support OpenGL.")
+        sys.exit(0)
+
+    widget = GLWidget(None)
+
+    if not widget.format().sampleBuffers():
+        QMessageBox.information(None, "OpenGL samplebuffers",
+                                "This system does not have sample buffer support.")
+        sys.exit(0)
+    widget.resize(640, 480)
+    widget.show()
+    sys.exit(app.exec_())
