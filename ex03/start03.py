@@ -20,13 +20,13 @@ def de_casteljau(coordArr, i, j, _t):
     return de_casteljau(coordArr, i, j - 1, _t) * (1 - _t) + de_casteljau(coordArr, i + 1, j - 1, _t) * _t
 
 
-def drawReference(ax, _item: tuple, _coord: tuple, _type_in_use: str):
+def drawreference(ax, _item: tuple, _coord: tuple, _type_in_use: str):
     ax.scatter(_item[0], _item[1], s=10, c='r')
     ax.scatter(_coord[0], _coord[1], s=10, c='r')
     ax.plot([_item[0], _coord[0]], [_item[1], _coord[1]], _type_in_use, alpha=0.5)
 
 
-def drawLine(ax, coordinates: list, _color: str):
+def drawline(ax, coordinates: list, _color: str):
     x, y = zip(*coordinates)
     ax.scatter(x, y, s=10, c='r')
     for i in range(len(coordinates) - 1):
@@ -48,7 +48,7 @@ def translation(ax, _coords: list, _t_vector: list):
         vec = np.append(np.array(item, dtype=float), [1])
         new_vec = trans @ vec
         result.append((new_vec[0], new_vec[1]))
-        drawReference(ax, (new_vec[0], new_vec[1]), item, 'r--')
+        drawreference(ax, (new_vec[0], new_vec[1]), item, 'r--')
     return result
 
 
@@ -60,11 +60,11 @@ def scaling(ax, _coords: list, _s_vector: list, _center: tuple):
     trans[0][2] = _center[0] * (1 - _s_vector[0])
     trans[1][2] = _center[1] * (1 - _s_vector[0])
     for item in _coords:
-        drawReference(ax, item, _center, 'b--')
+        drawreference(ax, item, _center, 'b--')
         vec = np.append(np.array(item, dtype=float), [1])
         new_vec = trans @ vec
         result.append((new_vec[0], new_vec[1]))
-        drawReference(ax, (new_vec[0], new_vec[1]), _center, 'r--')
+        drawreference(ax, (new_vec[0], new_vec[1]), _center, 'r--')
     return result
 
 
@@ -80,11 +80,11 @@ def rotation(ax, _coords: list, _r_vector: float, _center: tuple):
     trans[1][1] = cos_value
     trans[1][2] = _center[1] * (1 - cos_value) - _center[0] * sin_value
     for item in _coords:
-        drawReference(ax, item, _center, 'b--')
+        drawreference(ax, item, _center, 'b--')
         vec = np.append(np.array(item, dtype=float), [1])
         new_vec = trans @ vec
         result.append((new_vec[0], new_vec[1]))
-        drawReference(ax, (new_vec[0], new_vec[1]), _center, 'r--')
+        drawreference(ax, (new_vec[0], new_vec[1]), _center, 'r--')
     return result
 
 
@@ -187,7 +187,7 @@ class MainWindow(QMainWindow, Ui_Window_3):
             coords = [(random.randint(range_start, range_end), random.randint(range_start, range_end))
                       for _ in range(vertices)]
             coords.append(coords[0])
-            drawLine(self._static_ax_2, coords, 'g')
+            drawline(self._static_ax_2, coords, 'g')
             self._static_ax_2.grid(True)
             self.static_canvas_2.draw()
             self.trans_coords = coords
@@ -199,9 +199,9 @@ class MainWindow(QMainWindow, Ui_Window_3):
             self._static_ax_2.clear()
             try:
                 t_vector = [float(self.lineEdit_1.text()), float(self.lineEdit_2.text())]
-                drawLine(self._static_ax_2, self.trans_coords, 'g')
+                drawline(self._static_ax_2, self.trans_coords, 'g')
                 trans_coords = translation(self._static_ax_2, self.trans_coords, t_vector)
-                drawLine(self._static_ax_2, trans_coords, 'y')
+                drawline(self._static_ax_2, trans_coords, 'y')
                 self._static_ax_2.grid(True)
                 self.static_canvas_2.draw()
             except ValueError:
@@ -211,9 +211,9 @@ class MainWindow(QMainWindow, Ui_Window_3):
             try:
                 s_vector = [float(self.lineEdit_3.text()), float(self.lineEdit_4.text())]
                 reference_coord = (float(self.lineEdit_6.text()), float(self.lineEdit_7.text()))
-                drawLine(self._static_ax_2, self.trans_coords, 'g')
+                drawline(self._static_ax_2, self.trans_coords, 'g')
                 scale_coords = scaling(self._static_ax_2, self.trans_coords, s_vector, reference_coord)
-                drawLine(self._static_ax_2, scale_coords, 'y')
+                drawline(self._static_ax_2, scale_coords, 'y')
                 self._static_ax_2.grid(True)
                 self.static_canvas_2.draw()
             except ValueError:
@@ -223,9 +223,9 @@ class MainWindow(QMainWindow, Ui_Window_3):
             try:
                 r_vector = math.radians(float(self.lineEdit_5.text()))
                 reference_coord = (float(self.lineEdit_6.text()), float(self.lineEdit_7.text()))
-                drawLine(self._static_ax_2, self.trans_coords, 'g')
+                drawline(self._static_ax_2, self.trans_coords, 'g')
                 scale_coords = rotation(self._static_ax_2, self.trans_coords, r_vector, reference_coord)
-                drawLine(self._static_ax_2, scale_coords, 'y')
+                drawline(self._static_ax_2, scale_coords, 'y')
                 self._static_ax_2.grid(True)
                 self.static_canvas_2.draw()
             except ValueError:
