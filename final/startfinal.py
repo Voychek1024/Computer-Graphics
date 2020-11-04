@@ -12,6 +12,9 @@ class MainWindow(QMainWindow, Ui_Window_4):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
+        self.radioButton_1.toggled.connect(self.horizontalSlider.setEnabled)
+        self.radioButton_2.toggled.connect(self.horizontalSlider.setDisabled)
+
         self.initUI()
 
     def initUI(self):
