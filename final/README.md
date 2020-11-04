@@ -18,7 +18,9 @@
 0.OpenGL编程、控件、交互攻关 —— 进行中 <br />
 1.GUI设计 —— 已完成，未整合 <br />
 2.Bezier曲面的离散生成算法(de Casteljau算法) —— 等待中 <br />
-3.GUI控件部分整合 —— 进行中
+3.GUI控件部分整合 —— 进行中 <br />
+
 ### 项目环境
+Python 2.7 (Test) <br />
 Python 3.7 <br />
 PyQt5, PyOpenGL
