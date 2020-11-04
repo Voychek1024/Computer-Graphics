@@ -9,6 +9,7 @@
 
 import math
 import sys
+import random
 from time import sleep
 from final.test.interactionMatrix.mouseInteractor import MouseInteractor
 
@@ -62,7 +63,7 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-divisions = 10
+divisions = 1
 nPts = divisions * 3 + 1
 xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
 xStep = (xMax - xMin) / (nPts - 1)
@@ -76,15 +77,42 @@ controlPoints = [ \
 
 # The actual surface is divided into patches of 4 by 4
 # control points
-patch = [[[] for x in range(4)] for y in range(4)]
+patch = [[[] for x in range(nPts)] for y in range(nPts)]
+print(controlPoints, patch)
 
 
-def updateControlPoints(t):
+def updateControlPoints():
     """Calculate function values for all 2D grid points."""
 
     for row in controlPoints:
         for coord in row:
-            coord[2] = dampedOscillation(coord[0], coord[1], t)
+            coord[2] = random.random()
+
+
+run_once = True
+
+
+def display_control():
+    glPointSize(10)
+    glBegin(GL_POINTS)
+    for row in controlPoints:
+        for coord in row:
+            glVertex3f(float(coord[0]), float(coord[1]), float(coord[2]))
+    glEnd()
+    glBegin(GL_LINES)
+    glColor3f(1.0, 0.0, 0.0)
+    for row in controlPoints:
+        for i in range(0, nPts-1):
+            glVertex3f(float(row[i][0]), float(row[i][1]), float(row[i][2]))
+            glVertex3f(float(row[i+1][0]), float(row[i+1][1]), float(row[i+1][2]))
+    glEnd()
+    glBegin(GL_LINES)
+    glColor3f(1.0, 0.0, 0.0)
+    for j in range(0, nPts):
+        for i in range(0, nPts - 1):
+            glVertex3f(float(controlPoints[i][j][0]), float(controlPoints[i][j][1]), float(controlPoints[i][j][2]))
+            glVertex3f(float(controlPoints[i + 1][j][0]), float(controlPoints[i + 1][j][1]), float(controlPoints[i + 1][j][2]))
+    glEnd()
 
 
 def display():
@@ -101,8 +129,13 @@ def display():
     glRotatef(animationAngle, 0, 0, 1)
     global mouseInteractor
     mouseInteractor.applyTransformation()
-    global animationTime
-    updateControlPoints(animationTime)
+    global animationTime, run_once
+    display_control()
+    if run_once:
+        display_control()
+        updateControlPoints()
+        run_once = False
+
     global controlPoints, patch
     global nPts, divisionsGL
     # plot all surface patches

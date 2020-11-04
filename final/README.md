@@ -22,6 +22,6 @@
 4.OpenGL交互式（Pan, Zoom, Rotate） —— 已完成，项目未整合
 
 ### 项目环境
-Python 2.7 (Test) <br />
-Python 3.7 <br />
+Python 2.7 (Debug) <br />
+Python 3.7 (Release) <br />
 PyQt5, PyOpenGL
