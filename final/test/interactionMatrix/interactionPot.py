@@ -7,14 +7,14 @@
 # Details are given in the file license.txt included in this distribution.
 
 import sys
-from mouseInteractor import MouseInteractor
+from final.test.interactionMatrix.mouseInteractor import MouseInteractor
 
 try:
     from OpenGL.GLUT import *
     from OpenGL.GL import *
     from OpenGL.GLU import *
 except:
-    print ''' Fehler: PyOpenGL nicht intalliert !!'''
+    print(''' Fehler: PyOpenGL nicht intalliert !!''')
     sys.exit()
 
 

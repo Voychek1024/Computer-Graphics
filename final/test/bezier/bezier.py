@@ -10,13 +10,14 @@
 import math
 import sys
 from time import sleep
+from final.test.interactionMatrix.mouseInteractor import MouseInteractor
 
 try:
     from OpenGL.GLUT import *
     from OpenGL.GL import *
     from OpenGL.GLU import *
 except:
-    print ''' Error: PyOpenGL is not installed properly !!'''
+    print(''' Error: PyOpenGL is not installed properly !!''')
     sys.exit()
 
 try:
@@ -24,17 +25,16 @@ try:
 
     psyco.full()
 except ImportError:
-    print 'no psyco availiable'
+    print('no psyco availiable')
 
 animationAngle = 0.0
-frameRate = 25
+frameRate = 144
 animationTime = 0
 
 
 def animationStep():
     """Update animated parameters.
-
-	This Function is made active by glutSetIdleFunc"""
+    This Function is made active by glutSetIdleFunc"""
     global animationAngle
     global frameRate
     global animationTime
@@ -46,20 +46,19 @@ def animationStep():
     glutPostRedisplay()
 
 
-sigma = 0.5;
-twoSigSq = 2. * sigma * sigma;
+sigma = 0.5
+twoSigSq = 2. * sigma * sigma
 
 
 def dampedOscillation(u, v, t):
     """Calculation of a R2 -> R1 function at position u,v at time t.
+    A t-dependent cosine function is multiplied with a 2D gaussian.
+    Both functions depend on the distance of (u,v) to the origin."""
 
-	A t-dependent cosine function is multiplied with a 2D gaussian.
-	Both functions depend on the distance of (u,v) to the origin."""
-
-    distSq = u * u + v * v;
-    dist = math.pi * 4 * math.sqrt(distSq);
+    distSq = u * u + v * v
+    dist = math.pi * 4 * math.sqrt(distSq)
     global twoSigSq
-    return 0.5 * math.exp(-distSq / twoSigSq) * math.cos(dist - t);
+    return 0.5 * math.exp(-distSq / twoSigSq) * math.cos(dist - t)
 
 
 # number of patches in x and y direction
@@ -100,6 +99,8 @@ def display():
     glTranslatef(0, 0, -3)
     glRotatef(-30, 1, .3, 0)
     glRotatef(animationAngle, 0, 0, 1)
+    global mouseInteractor
+    mouseInteractor.applyTransformation()
     global animationTime
     updateControlPoints(animationTime)
     global controlPoints, patch
@@ -127,11 +128,11 @@ def init():
     glEnable(GL_LIGHT0)
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, 0)
     glLightfv(GL_LIGHT0, GL_POSITION, [2, 0, 10, 1])
-    lA = 0.8;
+    lA = 0.8
     glLightfv(GL_LIGHT0, GL_AMBIENT, [lA, lA, lA, 1])
-    lD = 1.0;
+    lD = 1.0
     glLightfv(GL_LIGHT0, GL_DIFFUSE, [lD, lD, lD, 1])
-    lS = 1.0;
+    lS = 1.0
     glLightfv(GL_LIGHT0, GL_SPECULAR, [lS, lS, lS, 1])
     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, [0.2, 0.2, 0.2, 1])
     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, [0.7, 0.7, 0.7, 1])
@@ -139,6 +140,8 @@ def init():
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 50)
     glEnable(GL_MAP2_VERTEX_3)
     glEnable(GL_AUTO_NORMAL)
+    global mouseInteractor
+    mouseInteractor = MouseInteractor(.01, 1)
 
 
 glutInit(sys.argv)
@@ -147,6 +150,7 @@ glutInitWindowSize(250, 250)
 glutInitWindowPosition(100, 100)
 glutCreateWindow(sys.argv[0])
 init()
+mouseInteractor.registerCallbacks()
 glutDisplayFunc(display)
-glutIdleFunc(animationStep)
+# glutIdleFunc(animationStep)
 glutMainLoop()
