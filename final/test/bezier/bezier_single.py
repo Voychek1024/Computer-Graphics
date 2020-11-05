@@ -43,26 +43,22 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-nPts = 2
+nPts = 10
 xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
 xStep = (xMax - xMin) / (nPts - 1)
 yStep = (yMax - yMin) / (nPts - 1)
-
 # initialise a list representing a regular 2D grid of control points.
 # controlPoints = []
+# The actual surface is divided into patches of 4 by 4 control points
 # patch = []
 controlPoints = [[[yMin + y * yStep, xMin + x * xStep, 0.0] for x in range(nPts)] for y in range(nPts)]
 patch = [[[] for x in range(nPts)] for y in range(nPts)]
+print(controlPoints, patch)
+projectionPoints = []
 
 
 def generate_control():
     pass
-
-
-# The actual surface is divided into patches of 4 by 4
-# control points
-
-print(controlPoints, patch)
 
 
 def updateControlPoints():
@@ -120,8 +116,9 @@ def display_control():
 
 
 def drag_control(i: int, j: int, mouse):
-    if True:
-        controlPoints[i][j][2] += mouse.wheelDirection
+    if mouse.mouseButtonPressed == GLUT_RIGHT_BUTTON:
+        controlPoints[i][j][2] += mouse.wheelDirection * 0.1
+        mouse.wheelDirection = 0
 
 
 def display():
