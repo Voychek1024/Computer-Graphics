@@ -9,7 +9,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 
 animationAngle = 0.0
-frameRate = 144
+frameRate = 60
 animationTime = 0
 
 
@@ -43,7 +43,7 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-nPts = 5
+nPts = 3
 xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
 xStep = (xMax - xMin) / (nPts - 1)
 yStep = (yMax - yMin) / (nPts - 1)
@@ -132,7 +132,7 @@ def display():
     # glTranslatef(0, 0, -3)
     # glRotatef(-30, 1, .3, 0)
     # glRotatef(animationAngle, 0, 0, 1)
-    gluLookAt(2, 2, 5,    # eye position
+    gluLookAt(3, 3, 3,     # eye position
               0, 0, 0,     # aim position
               0, 0, 1)     # up direction
     global mouseInteractor
