@@ -43,7 +43,7 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-nPts = 4
+nPts = 3
 xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
 xStep = (xMax - xMin) / (nPts - 1)
 yStep = (yMax - yMin) / (nPts - 1)
@@ -57,8 +57,8 @@ print(controlPoints, patch)
 projectionPoints = []
 
 
-def generate_control():
-    pass
+def generate_control(nPts: int):
+    print()
 
 
 def updateControlPoints():
@@ -67,6 +67,7 @@ def updateControlPoints():
     for row in controlPoints:
         for coord in row:
             coord[2] = random.random()
+    print(controlPoints)
 
 
 run_once = True
@@ -119,6 +120,11 @@ def drag_control(i: int, j: int, mouse):
     if mouse.mouseButtonPressed == GLUT_RIGHT_BUTTON:
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
+    """
+    print(glGetFloatv(GL_PROJECTION_MATRIX))
+    print(glGetFloatv(GL_MODELVIEW_MATRIX))
+    print(glGetIntegerv(GL_VIEWPORT))
+    """
 
 
 def display():
@@ -154,7 +160,7 @@ def init():
     """Glut init function."""
     glClearColor(0, 0, 0, 0)
     glEnable(GL_DEPTH_TEST)
-    # glEnable(GL_MAP2_VERTEX_3)
+    glEnable(GL_MAP2_VERTEX_3)
     # glEnable(GL_AUTO_NORMAL)
     global mouseInteractor
     mouseInteractor = MouseInteractor(.01, 1)

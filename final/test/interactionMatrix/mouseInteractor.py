@@ -42,7 +42,6 @@ class MouseInteractor(object):
 
     def mouseMotion(self, x, y):
         """Callback function for mouse motion.
-
         Depending on the button pressed, the displacement of the
         mouse pointer is either converted into a translation vector
         or a rotation matrix."""
@@ -55,13 +54,15 @@ class MouseInteractor(object):
         elif self.mouseButtonPressed == GLUT_LEFT_BUTTON:
             rY = deltaX * self.scalingFactorRotation * 0.2
             self.rotationMatrix.addRotation(rY, 0, 0, 1)
-            rX = deltaY * self.scalingFactorRotation * 0.1
+            rX = deltaY * self.scalingFactorRotation * 0.2
             self.rotationMatrix.addRotation(rX, 0, 1, 0)
         self.oldMousePos[0], self.oldMousePos[1] = x, y
         glutPostRedisplay()
 
     def mouseWheel(self, wheel, direction, x, y):
-        self.wheelDirection = direction
+        if self.mouseButtonPressed == GLUT_RIGHT_BUTTON:
+            print(x, y)
+            self.wheelDirection = direction
         glutPostRedisplay()
 
     def applyTransformation(self):
