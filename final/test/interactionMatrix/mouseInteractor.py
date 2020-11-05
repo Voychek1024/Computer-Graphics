@@ -29,6 +29,7 @@ class MouseInteractor(object):
         self.translationMatrix = InteractionMatrix()
         self.mouseButtonPressed = None
         self.oldMousePos = [0, 0]
+        self.wheelDirection = 0
 
     def mouseButton(self, button, mode, x, y):
         """Callback function for mouse button."""
@@ -54,11 +55,14 @@ class MouseInteractor(object):
         elif self.mouseButtonPressed == GLUT_LEFT_BUTTON:
             rY = deltaX * self.scalingFactorRotation * 0.2
             self.rotationMatrix.addRotation(rY, 0, 1, 0)
-            rX = deltaY * self.scalingFactorRotation * 0.2
+            rX = deltaY * self.scalingFactorRotation * 0.1
             self.rotationMatrix.addRotation(rX, 1, 0, 0)
-        else:
-            pass
         self.oldMousePos[0], self.oldMousePos[1] = x, y
+        glutPostRedisplay()
+
+    def mouseWheel(self, wheel, direction, x, y):
+        print(direction)
+        self.wheelDirection = direction
         glutPostRedisplay()
 
     def applyTransformation(self):
@@ -72,3 +76,4 @@ class MouseInteractor(object):
         """Initialise glut callback functions."""
         glutMouseFunc(self.mouseButton)
         glutMotionFunc(self.mouseMotion)
+        glutMouseWheelFunc(self.mouseWheel)

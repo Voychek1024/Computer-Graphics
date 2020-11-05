@@ -43,11 +43,10 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-nPts = 3
+nPts = 2
 xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
 xStep = (xMax - xMin) / (nPts - 1)
 yStep = (yMax - yMin) / (nPts - 1)
-divisionsGL = 20
 
 # initialise a list representing a regular 2D grid of control points.
 # controlPoints = []
@@ -120,6 +119,11 @@ def display_control():
     glEnd()
 
 
+def drag_control(i: int, j: int, mouse):
+    if True:
+        controlPoints[i][j][2] += mouse.wheelDirection
+
+
 def display():
     """OpenGL display function."""
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
@@ -132,9 +136,9 @@ def display():
     # glTranslatef(0, 0, -3)
     # glRotatef(-30, 1, .3, 0)
     # glRotatef(animationAngle, 0, 0, 1)
-    gluLookAt(3, 3, 3,     # eye position
-              0, 0, 0,     # aim position
-              0, 0, 1)     # up direction
+    gluLookAt(3, 3, 3,  # eye position
+              0, 0, 0,  # aim position
+              0, 0, 1)  # up direction
     global mouseInteractor
     mouseInteractor.applyTransformation()
     global animationTime, run_once
@@ -143,8 +147,9 @@ def display():
         updateControlPoints()
         run_once = False
     display_control()
+    drag_control(0, 0, mouseInteractor)
     global controlPoints, patch
-    global nPts, divisionsGL
+    global nPts
     glutSwapBuffers()
 
 
