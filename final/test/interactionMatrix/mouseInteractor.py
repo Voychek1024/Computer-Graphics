@@ -61,7 +61,6 @@ class MouseInteractor(object):
         glutPostRedisplay()
 
     def mouseWheel(self, wheel, direction, x, y):
-        print(direction)
         self.wheelDirection = direction
         glutPostRedisplay()
 

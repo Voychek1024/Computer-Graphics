@@ -43,7 +43,7 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-nPts = 10
+nPts = 4
 xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
 xStep = (xMax - xMin) / (nPts - 1)
 yStep = (yMax - yMin) / (nPts - 1)
