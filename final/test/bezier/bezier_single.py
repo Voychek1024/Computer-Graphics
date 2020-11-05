@@ -43,7 +43,7 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-nPts = 3
+nPts = 2
 xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
 xStep = (xMax - xMin) / (nPts - 1)
 yStep = (yMax - yMin) / (nPts - 1)
@@ -91,6 +91,7 @@ def show_axis():
 
 
 def display_control():
+    i = 0
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glPointSize(10)
     glBegin(GL_POINTS)
@@ -129,6 +130,7 @@ def drag_control(i: int, j: int, mouse):
 
 def display():
     """OpenGL display function."""
+    global controlPoints, patch
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
@@ -151,7 +153,7 @@ def display():
         run_once = False
     display_control()
     drag_control(0, 0, mouseInteractor)
-    global controlPoints, patch
+
     global nPts
     glutSwapBuffers()
 
@@ -161,7 +163,8 @@ def init():
     glClearColor(0, 0, 0, 0)
     glEnable(GL_DEPTH_TEST)
     glEnable(GL_MAP2_VERTEX_3)
-    # glEnable(GL_AUTO_NORMAL)
+    glEnable(GL_AUTO_NORMAL)
+    glEnable(GL_POINT_SMOOTH)
     global mouseInteractor
     mouseInteractor = MouseInteractor(.01, 1)
 
