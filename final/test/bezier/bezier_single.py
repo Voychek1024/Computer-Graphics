@@ -43,22 +43,30 @@ def dampedOscillation(u, v, t):
 
 
 # number of patches in x and y direction
-nPts = 2
-xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
-xStep = (xMax - xMin) / (nPts - 1)
-yStep = (yMax - yMin) / (nPts - 1)
+# xMin, xMax, yMin, yMax = -1.0, 1.0, -1.0, 1.0
+# xStep = (xMax - xMin) / (nPts - 1)
+# yStep = (yMax - yMin) / (nPts - 1)
 # initialise a list representing a regular 2D grid of control points.
 # controlPoints = []
 # The actual surface is divided into patches of 4 by 4 control points
 # patch = []
-controlPoints = [[[yMin + y * yStep, xMin + x * xStep, 0.0] for x in range(nPts)] for y in range(nPts)]
-patch = [[[] for x in range(nPts)] for y in range(nPts)]
+# controlPoints = [[[yMin + y * yStep, xMin + x * xStep, 0.0] for x in range(nPts)] for y in range(nPts)]
+# patch = [[[] for x in range(nPts)] for y in range(nPts)]
+
+
+def generate_control(_nPts: int):
+    _xMin, _xMax, _yMin, _yMax = -1.0, 1.0, -1.0, 1.0
+    _xStep = (_xMax - _xMin) / (_nPts - 1)
+    _yStep = (_yMax - _yMin) / (_nPts - 1)
+    _control = [[[_yMin + y * _yStep, _xMin + x * _xStep, 0.0] for x in range(_nPts)] for y in range(_nPts)]
+    _patch = [[[] for x in range(_nPts)] for y in range(_nPts)]
+    return _control, _patch
+
+
+nPts = 3
+controlPoints, patch = generate_control(nPts)
 print(controlPoints, patch)
 projectionPoints = []
-
-
-def generate_control(nPts: int):
-    print()
 
 
 def updateControlPoints():
@@ -91,7 +99,6 @@ def show_axis():
 
 
 def display_control():
-    i = 0
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
     glPointSize(10)
     glBegin(GL_POINTS)
@@ -118,7 +125,7 @@ def display_control():
 
 
 def drag_control(i: int, j: int, mouse):
-    if mouse.mouseButtonPressed == GLUT_RIGHT_BUTTON:
+    if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
     """
