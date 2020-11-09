@@ -37,8 +37,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         os.system("python3 ./ex03/start03.py")
 
     def execute_4(self):
-        # self.close()
-        pass
+        self.close()
+        os.system("python3 ./final/startfinal.py")
 
 
 if __name__ == '__main__':

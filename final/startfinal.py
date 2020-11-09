@@ -31,7 +31,7 @@ def generate_control(_nPts: int):
 
 nPts = 3
 controlPoints = generate_control(nPts)
-print(controlPoints)
+# print(controlPoints)
 
 
 def updateControlPoints(z_axis: list):
@@ -46,7 +46,7 @@ def updateControlPoints(z_axis: list):
             for coord in row:
                 coord[2] = z_axis[i]
                 i += 1
-    print(controlPoints)
+    # print(controlPoints)
 
 
 run_once = True
@@ -315,7 +315,7 @@ class MainWindow(QMainWindow, Ui_Window_4):
 
     def initUI(self):
         self.setWindowTitle("Computer Graphics Final")
-        self.setWindowIcon(QIcon("04.png"))
+        self.setWindowIcon(QIcon("final/04.png"))
         self.show()
 
     def initGL(self):
@@ -347,15 +347,17 @@ class MainWindow(QMainWindow, Ui_Window_4):
 
     def read_file(self):
         fname = QFileDialog.getOpenFileName(self, 'Open File', 'C:\\', "txt files (*.txt)")
-        print(fname[0])
+        # print(fname[0])
         z_axis = list()
         with open(fname[0], 'r') as in_file:
             lines = in_file.readlines()
-            if math.sqrt(len(lines)) % 1 == 0:
+            result = math.sqrt(len(lines))
+            if result % 1 == 0:
                 for line in lines:
                     z_axis.append(eval(line))
-                print(z_axis)
+                # print(z_axis)
                 global controlPoints, nPts
+                self.horizontalSlider.setValue(int(result) - 1)
                 nPts = int(self.horizontalSlider.value()) + 1
                 controlPoints = generate_control(nPts)
                 updateControlPoints(z_axis)
