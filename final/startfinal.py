@@ -368,13 +368,13 @@ class MainWindow(QMainWindow, Ui_Window_4):
         data = glReadPixels(0, 0, 800, 800, GL_RGBA, GL_UNSIGNED_BYTE)
         image = Image.frombytes("RGBA", (800, 800), data)
         image = ImageOps.flip(image)
-        image.save('glut_out_{}.png'.format(time.strftime("%H-%M-%S")), 'PNG')
+        image.save('final/glut_out_{}.png'.format(time.strftime("%H-%M-%S")), 'PNG')
         z_axis = list()
         global controlPoints
         for row in controlPoints:
             for coord in row:
                 z_axis.append(coord[2])
-        with open('control_points_save.txt', 'w') as out_file:
+        with open('final/control_points_save.txt', 'w') as out_file:
             for item in z_axis:
                 out_file.write(str(item))
                 out_file.write('\n')
