@@ -14,19 +14,16 @@ from final.final_ui import *
 from final.test.interactionMatrix.mouseInteractor import MouseInteractor
 
 
-
-
 def generate_control(_nPts: int):
     _xMin, _xMax, _yMin, _yMax = -1.0, 1.0, -1.0, 1.0
     _xStep = (_xMax - _xMin) / (_nPts - 1)
     _yStep = (_yMax - _yMin) / (_nPts - 1)
     _control = [[[_yMin + y * _yStep, _xMin + x * _xStep, 0.0] for x in range(_nPts)] for y in range(_nPts)]
-    _patch = [[[] for x in range(_nPts)] for y in range(_nPts)]
-    return _control, _patch
+    return _control
 
 
 nPts = 3
-controlPoints, patch = generate_control(nPts)
+controlPoints = generate_control(nPts)
 
 
 def updateControlPoints():
@@ -261,9 +258,6 @@ def display():
     mouseInteractor.applyTransformation()
     global run_once
     show_axis()
-    if run_once:
-        updateControlPoints()
-        run_once = False
     display_control()
     display_surface()
     global index_i, index_j
@@ -290,8 +284,17 @@ class MainWindow(QMainWindow, Ui_Window_4):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
 
+        self.horizontalSlider.setValue(2)
+
         self.radioButton_1.toggled.connect(self.horizontalSlider.setEnabled)
         self.radioButton_2.toggled.connect(self.horizontalSlider.setDisabled)
+
+        self.pushButton_1.clicked.connect(self.reset_control)
+        self.pushButton_2.clicked.connect(self.random_control)
+        self.pushButton_3.clicked.connect(self.read_file)
+        self.pushButton_4.clicked.connect(self.save_plot)
+
+        self.horizontalSlider.valueChanged.connect(self.reset_control)
 
         self.initUI()
 
@@ -315,6 +318,25 @@ class MainWindow(QMainWindow, Ui_Window_4):
         glutKeyboardFunc(keyboard)
         # glutIdleFunc(animationStep)
         glutMainLoop()
+
+    def reset_control(self):
+        global controlPoints, nPts
+        nPts = int(self.horizontalSlider.value()) + 1
+        controlPoints = generate_control(nPts)
+        glutPostRedisplay()
+
+    def random_control(self):
+        global controlPoints, nPts
+        nPts = int(self.horizontalSlider.value()) + 1
+        controlPoints = generate_control(nPts)
+        updateControlPoints()
+        glutPostRedisplay()
+
+    def read_file(self):
+        pass
+
+    def save_plot(self):
+        pass
 
 
 if __name__ == '__main__':
