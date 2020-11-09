@@ -210,24 +210,27 @@ def display_surface():
 
 
 spin = 0.0
+index_i, index_j = 0, 0
 
 
 def drag_control(i: int, j: int, mouse):
-    """
+    glPointSize(25)
     glBegin(GL_POINTS)
-    glColor3f(1.0, 0.0, 0.0)
+    glColor3f(1.0, 1.0, 1.0)
     glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
     glEnd()
-    """
+
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
         glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
-        print(mouse.oldMousePos)
         # gluProject()
+        """
+        print(mouse.oldMousePos)
         print(glGetFloatv(GL_PROJECTION_MATRIX))
         print(glGetFloatv(GL_MODELVIEW_MATRIX))
         print(glGetIntegerv(GL_VIEWPORT))
+        """
         glPopMatrix()
     elif mouse.mouseButtonPressed == GLUT_MIDDLE_BUTTON:
         pass
@@ -235,6 +238,7 @@ def drag_control(i: int, j: int, mouse):
 
 def keyboard(key, x, y):
     position = [0.0, 0.0, 4.0, 1.0]
+    global index_i, index_j
     if key == b'q':
         global spin
 
@@ -255,9 +259,24 @@ def keyboard(key, x, y):
 
         glPopMatrix()
         glutPostRedisplay()
+
     elif key == b'e':
         glDisable(GL_LIGHTING)
         glDisable(GL_LIGHT0)
+        glutPostRedisplay()
+
+    elif key == b'k':
+        if index_i - 1 >= 0:
+            index_i -= 1
+        else:
+            index_i = nPts - 1
+        glutPostRedisplay()
+
+    elif key == b'l':
+        if index_j + 1 < nPts:
+            index_j += 1
+        else:
+            index_j = 0
         glutPostRedisplay()
 
 
@@ -282,14 +301,15 @@ def display():
 
     global mouseInteractor
     mouseInteractor.applyTransformation()
-    global animationTime, run_once
+    global run_once
     show_axis()
     if run_once:
         updateControlPoints()
         run_once = False
     display_control()
     display_surface()
-    drag_control(0, 0, mouseInteractor)
+    global index_i, index_j
+    drag_control(index_i, index_j, mouseInteractor)
     glPopMatrix()
     global nPts
     glutSwapBuffers()
