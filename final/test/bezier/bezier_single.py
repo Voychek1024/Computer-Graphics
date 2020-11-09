@@ -10,38 +10,38 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
-animationAngle = 0.0
-frameRate = 60
-animationTime = 0
-
-
-def animationStep():
-    """Update animated parameters.
-    This Function is made active by glutSetIdleFunc"""
-    global animationAngle
-    global frameRate
-    global animationTime
-    animationAngle += 0.3
-    animationTime += 0.1
-    while animationAngle > 360:
-        animationAngle -= 360
-    sleep(1 / float(frameRate))
-    glutPostRedisplay()
-
-
-sigma = 0.5
-twoSigSq = 2. * sigma * sigma
-
-
-def dampedOscillation(u, v, t):
-    """Calculation of a R2 -> R1 function at position u,v at time t.
-    A t-dependent cosine function is multiplied with a 2D gaussian.
-    Both functions depend on the distance of (u,v) to the origin."""
-
-    distSq = u * u + v * v
-    dist = math.pi * 4 * math.sqrt(distSq)
-    global twoSigSq
-    return 0.5 * math.exp(-distSq / twoSigSq) * math.cos(dist - t)
+# animationAngle = 0.0
+# frameRate = 60
+# animationTime = 0
+#
+#
+# def animationStep():
+#     """Update animated parameters.
+#     This Function is made active by glutSetIdleFunc"""
+#     global animationAngle
+#     global frameRate
+#     global animationTime
+#     animationAngle += 0.3
+#     animationTime += 0.1
+#     while animationAngle > 360:
+#         animationAngle -= 360
+#     sleep(1 / float(frameRate))
+#     glutPostRedisplay()
+#
+#
+# sigma = 0.5
+# twoSigSq = 2. * sigma * sigma
+#
+#
+# def dampedOscillation(u, v, t):
+#     """Calculation of a R2 -> R1 function at position u,v at time t.
+#     A t-dependent cosine function is multiplied with a 2D gaussian.
+#     Both functions depend on the distance of (u,v) to the origin."""
+#
+#     distSq = u * u + v * v
+#     dist = math.pi * 4 * math.sqrt(distSq)
+#     global twoSigSq
+#     return 0.5 * math.exp(-distSq / twoSigSq) * math.cos(dist - t)
 
 
 # number of patches in x and y direction
@@ -249,7 +249,7 @@ def keyboard(key, x, y):
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
         glPushMatrix()
-        glRotated(spin, spin, 1.0, 0.0)
+        glRotated(spin, 1, 1, 0.0)
         glLightfv(GL_LIGHT0, GL_POSITION, position)
         glDisable(GL_LIGHTING)
 

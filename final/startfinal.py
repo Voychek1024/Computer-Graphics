@@ -3,8 +3,7 @@ import random
 import numpy as np
 import sys
 
-from PyQt5.QtGui import QIcon, QColor
-from PyQt5.QtOpenGL import QGLWidget
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QApplication
 
 from OpenGL.GLUT import *
@@ -13,6 +12,8 @@ from OpenGL.GLU import *
 
 from final.final_ui import *
 from final.test.interactionMatrix.mouseInteractor import MouseInteractor
+
+
 
 
 def generate_control(_nPts: int):
@@ -26,60 +27,18 @@ def generate_control(_nPts: int):
 
 nPts = 3
 controlPoints, patch = generate_control(nPts)
-print(controlPoints, patch)
-projectionPoints = []
-spin = 0.0
-
-
-def show_axis():
-    glBegin(GL_LINES)
-
-    glColor3f(1.0, 0.0, 0.0)
-    glVertex3f(-15.0, 0.0, 0.0)
-    glVertex3f(15.0, 0.0, 0.0)
-
-    glColor3f(0.0, 1.0, 0.0)
-    glVertex3f(0.0, -15.0, 0.0)
-    glVertex3f(0.0, 15.0, 0.0)
-
-    glColor3f(0.0, 0.0, 1.0)
-    glVertex3f(0.0, 0.0, -15.0)
-    glVertex3f(0.0, 0.0, 15.0)
-    glEnd()
 
 
 def updateControlPoints():
     """Calculate function values for all 2D grid points."""
+
     for row in controlPoints:
         for coord in row:
             coord[2] = random.random()
     print(controlPoints)
 
 
-def display_control():
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
-    glPointSize(10)
-    glBegin(GL_POINTS)
-    glColor3f(0.0, 1.0, 0.0)
-    for row in controlPoints:
-        for coord in row:
-            glVertex3f(float(coord[0]), float(coord[1]), float(coord[2]))
-    glEnd()
-    glBegin(GL_LINES)
-    glColor3f(1.0, 0.0, 0.0)
-    for row in controlPoints:
-        for i in range(0, nPts - 1):
-            glVertex3f(float(row[i][0]), float(row[i][1]), float(row[i][2]))
-            glVertex3f(float(row[i + 1][0]), float(row[i + 1][1]), float(row[i + 1][2]))
-    glEnd()
-    glBegin(GL_LINES)
-    glColor3f(1.0, 0.0, 0.0)
-    for j in range(0, nPts):
-        for i in range(0, nPts - 1):
-            glVertex3f(float(controlPoints[i][j][0]), float(controlPoints[i][j][1]), float(controlPoints[i][j][2]))
-            glVertex3f(float(controlPoints[i + 1][j][0]), float(controlPoints[i + 1][j][1]),
-                       float(controlPoints[i + 1][j][2]))
-    glEnd()
+run_once = True
 
 
 def casteljau_curve(points, t):
@@ -107,6 +66,49 @@ def casteljau_surface(points, u, v):
 
     return (casteljau_curve(xis, v), casteljau_curve(yis, v),
             casteljau_curve(zis, v))
+
+
+def show_axis():
+    glBegin(GL_LINES)
+
+    glColor3f(1.0, 0.0, 0.0)
+    glVertex3f(-15.0, 0.0, 0.0)
+    glVertex3f(15.0, 0.0, 0.0)
+
+    glColor3f(0.0, 1.0, 0.0)
+    glVertex3f(0.0, -15.0, 0.0)
+    glVertex3f(0.0, 15.0, 0.0)
+
+    glColor3f(0.0, 0.0, 1.0)
+    glVertex3f(0.0, 0.0, -15.0)
+    glVertex3f(0.0, 0.0, 15.0)
+    glEnd()
+
+
+def display_control():
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
+    glPointSize(10)
+    glBegin(GL_POINTS)
+    glColor3f(0.0, 1.0, 0.0)
+    for row in controlPoints:
+        for coord in row:
+            glVertex3f(float(coord[0]), float(coord[1]), float(coord[2]))
+    glEnd()
+    glBegin(GL_LINES)
+    glColor3f(1.0, 0.0, 0.0)
+    for row in controlPoints:
+        for i in range(0, nPts - 1):
+            glVertex3f(float(row[i][0]), float(row[i][1]), float(row[i][2]))
+            glVertex3f(float(row[i + 1][0]), float(row[i + 1][1]), float(row[i + 1][2]))
+    glEnd()
+    glBegin(GL_LINES)
+    glColor3f(1.0, 0.0, 0.0)
+    for j in range(0, nPts):
+        for i in range(0, nPts - 1):
+            glVertex3f(float(controlPoints[i][j][0]), float(controlPoints[i][j][1]), float(controlPoints[i][j][2]))
+            glVertex3f(float(controlPoints[i + 1][j][0]), float(controlPoints[i + 1][j][1]),
+                       float(controlPoints[i + 1][j][2]))
+    glEnd()
 
 
 def display_surface():
@@ -165,22 +167,28 @@ def display_surface():
     glEnd()
 
 
+spin = 0.0
+index_i, index_j = 0, 0
+
+
 def drag_control(i: int, j: int, mouse):
-    """
+    glPointSize(25)
     glBegin(GL_POINTS)
-    glColor3f(1.0, 0.0, 0.0)
+    glColor3f(1.0, 1.0, 1.0)
     glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
     glEnd()
-    """
+
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
         glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
-        print(mouse.oldMousePos)
         # gluProject()
+        """
+        print(mouse.oldMousePos)
         print(glGetFloatv(GL_PROJECTION_MATRIX))
         print(glGetFloatv(GL_MODELVIEW_MATRIX))
         print(glGetIntegerv(GL_VIEWPORT))
+        """
         glPopMatrix()
     elif mouse.mouseButtonPressed == GLUT_MIDDLE_BUTTON:
         pass
@@ -188,6 +196,7 @@ def drag_control(i: int, j: int, mouse):
 
 def keyboard(key, x, y):
     position = [0.0, 0.0, 4.0, 1.0]
+    global index_i, index_j
     if key == b'q':
         global spin
 
@@ -198,7 +207,7 @@ def keyboard(key, x, y):
         glEnable(GL_LIGHTING)
         glEnable(GL_LIGHT0)
         glPushMatrix()
-        glRotated(spin, spin, 1.0, 0.0)
+        glRotated(spin, 1, 1, 0.0)
         glLightfv(GL_LIGHT0, GL_POSITION, position)
         glDisable(GL_LIGHTING)
 
@@ -208,61 +217,72 @@ def keyboard(key, x, y):
 
         glPopMatrix()
         glutPostRedisplay()
+
     elif key == b'e':
         glDisable(GL_LIGHTING)
         glDisable(GL_LIGHT0)
         glutPostRedisplay()
 
+    elif key == b'k':
+        if index_i - 1 >= 0:
+            index_i -= 1
+        else:
+            index_i = nPts - 1
+        glutPostRedisplay()
 
-class GLWidget(QGLWidget):
-    def __init__(self, parent=None):
-        super(GLWidget, self).__init__(parent)
-        self.run_once = True
+    elif key == b'l':
+        if index_j + 1 < nPts:
+            index_j += 1
+        else:
+            index_j = 0
+        glutPostRedisplay()
 
-    def initializeGL(self):
-        glClearColor(0, 0, 0, 1)
-        glShadeModel(GL_SMOOTH)
-        glEnable(GL_DEPTH_TEST)
-        glEnable(GL_MAP2_VERTEX_3)
-        glEnable(GL_AUTO_NORMAL)
-        glEnable(GL_POINT_SMOOTH)
-        self.mouseInteractor = MouseInteractor(.01, 1)
 
-        glutInit()
-        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-        self.mouseInteractor.registerCallbacks()
-        glutDisplayFunc(self.paintGL)
-        glutReshapeFunc(self.resizeGL)
-        glutKeyboardFunc(keyboard)
+def reshape(w, h):
+    glViewport(0, 0, w, h)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(45, w / h, 1.0, 100.0)
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
 
-    def resizeGL(self, w: int, h: int):
-        glViewport(0, 0, w, h)
-        glMatrixMode(GL_PROJECTION)
-        glLoadIdentity()
-        gluPerspective(45, w / h, 1.0, 100.0)
-        glMatrixMode(GL_MODELVIEW)
-        glLoadIdentity()
 
-    def paintGL(self):
-        """OpenGL display function."""
-        global controlPoints, patch
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+def display():
+    """OpenGL display function."""
+    global controlPoints, patch
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
-        glPushMatrix()
-        gluLookAt(3, 3, 3,  # eye position
-                  0, 0, 0,  # aim position
-                  0, 0, 1)  # up direction
+    glPushMatrix()
+    gluLookAt(3, 3, 3,  # eye position
+              0, 0, 0,  # aim position
+              0, 0, 1)  # up direction
 
-        self.mouseInteractor.applyTransformation()
-        show_axis()
-        if self.run_once:
-            updateControlPoints()
-            self.run_once = False
-        display_control()
-        display_surface()
-        drag_control(0, 0, self.mouseInteractor)
-        glPopMatrix()
-        glutSwapBuffers()
+    global mouseInteractor
+    mouseInteractor.applyTransformation()
+    global run_once
+    show_axis()
+    if run_once:
+        updateControlPoints()
+        run_once = False
+    display_control()
+    display_surface()
+    global index_i, index_j
+    drag_control(index_i, index_j, mouseInteractor)
+    glPopMatrix()
+    global nPts
+    glutSwapBuffers()
+
+
+def init():
+    """Glut init function."""
+    glClearColor(0, 0, 0, 1)
+    glShadeModel(GL_SMOOTH)
+    glEnable(GL_DEPTH_TEST)
+    glEnable(GL_MAP2_VERTEX_3)
+    glEnable(GL_AUTO_NORMAL)
+    glEnable(GL_POINT_SMOOTH)
+    global mouseInteractor
+    mouseInteractor = MouseInteractor(.01, 1)
 
 
 class MainWindow(QMainWindow, Ui_Window_4):
@@ -273,14 +293,28 @@ class MainWindow(QMainWindow, Ui_Window_4):
         self.radioButton_1.toggled.connect(self.horizontalSlider.setEnabled)
         self.radioButton_2.toggled.connect(self.horizontalSlider.setDisabled)
 
-        self.openGLWidget = GLWidget(self)
-
         self.initUI()
+
+        self.initGL()
 
     def initUI(self):
         self.setWindowTitle("Computer Graphics Final")
         self.setWindowIcon(QIcon("04.png"))
         self.show()
+
+    def initGL(self):
+        glutInit(sys.argv)
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+        glutInitWindowSize(800, 800)
+        glutInitWindowPosition(100, 100)
+        glutCreateWindow(sys.argv[0])
+        init()
+        mouseInteractor.registerCallbacks()
+        glutDisplayFunc(display)
+        glutReshapeFunc(reshape)
+        glutKeyboardFunc(keyboard)
+        # glutIdleFunc(animationStep)
+        glutMainLoop()
 
 
 if __name__ == '__main__':
