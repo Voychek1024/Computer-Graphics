@@ -1,14 +1,21 @@
+import datetime
+import math
 import os
 import random
+import time
+
 import numpy as np
 import sys
 
 from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QApplication
+from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
+
+from PIL import Image
+from PIL import ImageOps
 
 from final.final_ui import *
 from final.test.interactionMatrix.mouseInteractor import MouseInteractor
@@ -24,14 +31,21 @@ def generate_control(_nPts: int):
 
 nPts = 3
 controlPoints = generate_control(nPts)
+print(controlPoints)
 
 
-def updateControlPoints():
+def updateControlPoints(z_axis: list):
     """Calculate function values for all 2D grid points."""
-
-    for row in controlPoints:
-        for coord in row:
-            coord[2] = random.random()
+    if not z_axis:
+        for row in controlPoints:
+            for coord in row:
+                coord[2] = random.random()
+    else:
+        i = 0
+        for row in controlPoints:
+            for coord in row:
+                coord[2] = z_axis[i]
+                i += 1
     print(controlPoints)
 
 
@@ -297,7 +311,6 @@ class MainWindow(QMainWindow, Ui_Window_4):
         self.horizontalSlider.valueChanged.connect(self.reset_control)
 
         self.initUI()
-
         self.initGL()
 
     def initUI(self):
@@ -329,14 +342,40 @@ class MainWindow(QMainWindow, Ui_Window_4):
         global controlPoints, nPts
         nPts = int(self.horizontalSlider.value()) + 1
         controlPoints = generate_control(nPts)
-        updateControlPoints()
+        updateControlPoints([])
         glutPostRedisplay()
 
     def read_file(self):
-        pass
+        fname = QFileDialog.getOpenFileName(self, 'Open File', 'C:\\', "txt files (*.txt)")
+        print(fname[0])
+        z_axis = list()
+        with open(fname[0], 'r') as in_file:
+            lines = in_file.readlines()
+            if math.sqrt(len(lines)) % 1 == 0:
+                for line in lines:
+                    z_axis.append(eval(line))
+                print(z_axis)
+                global controlPoints, nPts
+                nPts = int(self.horizontalSlider.value()) + 1
+                controlPoints = generate_control(nPts)
+                updateControlPoints(z_axis)
+                glutPostRedisplay()
 
     def save_plot(self):
-        pass
+        glPixelStorei(GL_PACK_ALIGNMENT, 1)
+        data = glReadPixels(0, 0, 800, 800, GL_RGBA, GL_UNSIGNED_BYTE)
+        image = Image.frombytes("RGBA", (800, 800), data)
+        image = ImageOps.flip(image)
+        image.save('glut_out_{}.png'.format(time.strftime("%H-%M-%S")), 'PNG')
+        z_axis = list()
+        global controlPoints
+        for row in controlPoints:
+            for coord in row:
+                z_axis.append(coord[2])
+        with open('control_points_save.txt', 'w') as out_file:
+            for item in z_axis:
+                out_file.write(str(item))
+                out_file.write('\n')
 
 
 if __name__ == '__main__':
