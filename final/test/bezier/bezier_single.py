@@ -193,6 +193,15 @@ def display_surface():
                 continue
         glEnd()
 
+    glBegin(GL_QUADS)
+    glColor3f(0.0, 0.5, 0.5)
+    glVertex3f(-1.0, -1.0, -1.0)
+    glVertex3f(-1.0, 1.0, -1.0)
+    glVertex3f(1.0, -1.0, -1.0)
+    glVertex3f(1.0, 1.0, -1.0)
+
+    glEnd()
+
 
 def drag_control(i: int, j: int, mouse):
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
@@ -238,7 +247,7 @@ def display():
 
 def init():
     """Glut init function."""
-    glClearColor(0, 0, 0, 0)
+    glClearColor(0, 0, 0, 1)
     glEnable(GL_DEPTH_TEST)
     glEnable(GL_MAP2_VERTEX_3)
     glEnable(GL_AUTO_NORMAL)
@@ -249,7 +258,7 @@ def init():
 
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-glutInitWindowSize(800, 800)
+glutInitWindowSize(501, 501)
 glutInitWindowPosition(100, 100)
 glutCreateWindow(sys.argv[0])
 init()
