@@ -159,7 +159,7 @@ def display_surface():
     yas = list()
     zas = list()
 
-    interval = 10
+    interval = 16
     for u in np.linspace(0.0, 1.0, interval):
         for v in np.linspace(0.0, 1.0, interval):
             p = casteljau_surface(cp, u, v)
@@ -198,7 +198,7 @@ def display_surface():
         if (j + 1) % interval == 0:
             continue
         try:
-            glColor3f(np.linspace(0.0, 1.0, len(xas))[j], np.linspace(0.0, 1.0, len(xas))[j],
+            glColor3f(np.linspace(1.0, 0.0, len(xas))[j], np.linspace(0.5, 0.5, len(xas))[j],
                       np.linspace(0.0, 1.0, len(xas))[j])
             glVertex3f(xas[j], yas[j], zas[j])
             glVertex3f(xas[j + 1], yas[j + 1], zas[j + 1])
@@ -206,9 +206,6 @@ def display_surface():
             glVertex3f(xas[j + interval], yas[j + interval], zas[j + interval])
         except IndexError:
             continue
-
-        # glutSwapBuffers()
-        # sleep(0.01)
     glEnd()
 
 
@@ -216,20 +213,24 @@ spin = 0.0
 
 
 def drag_control(i: int, j: int, mouse):
+    """
+    glBegin(GL_POINTS)
+    glColor3f(1.0, 0.0, 0.0)
+    glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
+    glEnd()
+    """
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
         glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
         print(mouse.oldMousePos)
-
+        # gluProject()
+        print(glGetFloatv(GL_PROJECTION_MATRIX))
+        print(glGetFloatv(GL_MODELVIEW_MATRIX))
+        print(glGetIntegerv(GL_VIEWPORT))
         glPopMatrix()
     elif mouse.mouseButtonPressed == GLUT_MIDDLE_BUTTON:
         pass
-    """
-    print(glGetFloatv(GL_PROJECTION_MATRIX))
-    print(glGetFloatv(GL_MODELVIEW_MATRIX))
-    print(glGetIntegerv(GL_VIEWPORT))
-    """
 
 
 def keyboard(key, x, y):
@@ -246,12 +247,10 @@ def keyboard(key, x, y):
         glPushMatrix()
         glRotated(spin, spin, 1.0, 0.0)
         glLightfv(GL_LIGHT0, GL_POSITION, position)
-
         glDisable(GL_LIGHTING)
-        glPushMatrix()
+
         glColor3f(0.0, 1.0, 1.0)
         glutSolidCube(0.1)
-        glPopMatrix()
         glEnable(GL_LIGHTING)
 
         glPopMatrix()
@@ -301,8 +300,8 @@ def init():
     glClearColor(0, 0, 0, 1)
     glShadeModel(GL_SMOOTH)
     glEnable(GL_DEPTH_TEST)
-    # glEnable(GL_MAP2_VERTEX_3)
-    # glEnable(GL_AUTO_NORMAL)
+    glEnable(GL_MAP2_VERTEX_3)
+    glEnable(GL_AUTO_NORMAL)
     glEnable(GL_POINT_SMOOTH)
     global mouseInteractor
     mouseInteractor = MouseInteractor(.01, 1)
