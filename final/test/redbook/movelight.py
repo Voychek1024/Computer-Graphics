@@ -106,7 +106,7 @@ def display():
     glTranslated(0.0, 0.0, 1.5)
     glDisable(GL_LIGHTING)
     glColor3f(0.0, 1.0, 1.0)
-    glutWireCube(0.1)
+    glutSolidCube(1)
     glEnable(GL_LIGHTING)
     glPopMatrix()
 
@@ -138,7 +138,7 @@ def keyboard(key, x, y):
 
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB)
-glutInitWindowSize(500, 500);
+glutInitWindowSize(500, 500)
 glutInitWindowPosition(100, 100)
 glutCreateWindow("movelight")
 init()

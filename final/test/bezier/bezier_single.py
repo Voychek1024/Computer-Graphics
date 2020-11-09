@@ -194,19 +194,33 @@ def display_surface():
         glEnd()
 
     glBegin(GL_QUADS)
-    glColor3f(0.0, 0.5, 0.5)
-    glVertex3f(-1.0, -1.0, -1.0)
-    glVertex3f(-1.0, 1.0, -1.0)
-    glVertex3f(1.0, -1.0, -1.0)
-    glVertex3f(1.0, 1.0, -1.0)
+    for j in range(len(xas)):
+        if (j + 1) % interval == 0:
+            continue
+        try:
+            glColor3f(np.linspace(0.0, 1.0, len(xas))[j], np.linspace(0.0, 1.0, len(xas))[j],
+                      np.linspace(0.0, 1.0, len(xas))[j])
+            glVertex3f(xas[j], yas[j], zas[j])
+            glVertex3f(xas[j + 1], yas[j + 1], zas[j + 1])
+            glVertex3f(xas[j + interval + 1], yas[j + interval + 1], zas[j + interval + 1])
+            glVertex3f(xas[j + interval], yas[j + interval], zas[j + interval])
+        except IndexError:
+            continue
 
+        # glutSwapBuffers()
+        # sleep(0.01)
     glEnd()
+
+
+spin = 0.0
 
 
 def drag_control(i: int, j: int, mouse):
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
+    elif mouse.mouseButtonPressed == GLUT_MIDDLE_BUTTON:
+        pass
     """
     print(glGetFloatv(GL_PROJECTION_MATRIX))
     print(glGetFloatv(GL_MODELVIEW_MATRIX))
@@ -214,22 +228,55 @@ def drag_control(i: int, j: int, mouse):
     """
 
 
+def keyboard(key, x, y):
+    position = [0.0, 0.0, 4.0, 1.0]
+    if key == b'q':
+        global spin
+
+        spin += 5.0
+        if spin == 360.0:
+            spin = 0.0
+
+        glEnable(GL_LIGHTING)
+        glEnable(GL_LIGHT0)
+        glPushMatrix()
+        glRotated(spin, spin, 1.0, 0.0)
+        glLightfv(GL_LIGHT0, GL_POSITION, position)
+
+        glDisable(GL_LIGHTING)
+        glPushMatrix()
+        glColor3f(0.0, 1.0, 1.0)
+        glutSolidCube(0.1)
+        glPopMatrix()
+        glEnable(GL_LIGHTING)
+
+        glPopMatrix()
+        glutPostRedisplay()
+    elif key == b'e':
+        glDisable(GL_LIGHTING)
+        glDisable(GL_LIGHT0)
+        glutPostRedisplay()
+
+
+def reshape(w, h):
+    glViewport(0, 0, w, h)
+    glMatrixMode(GL_PROJECTION)
+    glLoadIdentity()
+    gluPerspective(45, w / h, 1.0, 100.0)
+    glMatrixMode(GL_MODELVIEW)
+    glLoadIdentity()
+
+
 def display():
     """OpenGL display function."""
     global controlPoints, patch
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-    glMatrixMode(GL_PROJECTION)
-    glLoadIdentity()
-    xSize, ySize = glutGet(GLUT_WINDOW_WIDTH), glutGet(GLUT_WINDOW_HEIGHT)
-    gluPerspective(45, float(xSize) / float(ySize), 0.1, 100.0)
-    glMatrixMode(GL_MODELVIEW)
-    glLoadIdentity()
-    # glTranslatef(0, 0, -3)
-    # glRotatef(-30, 1, .3, 0)
-    # glRotatef(animationAngle, 0, 0, 1)
+
+    glPushMatrix()
     gluLookAt(3, 3, 3,  # eye position
               0, 0, 0,  # aim position
               0, 0, 1)  # up direction
+
     global mouseInteractor
     mouseInteractor.applyTransformation()
     global animationTime, run_once
@@ -240,7 +287,7 @@ def display():
     display_control()
     display_surface()
     drag_control(0, 0, mouseInteractor)
-
+    glPopMatrix()
     global nPts
     glutSwapBuffers()
 
@@ -248,9 +295,10 @@ def display():
 def init():
     """Glut init function."""
     glClearColor(0, 0, 0, 1)
+    glShadeModel(GL_SMOOTH)
     glEnable(GL_DEPTH_TEST)
-    glEnable(GL_MAP2_VERTEX_3)
-    glEnable(GL_AUTO_NORMAL)
+    # glEnable(GL_MAP2_VERTEX_3)
+    # glEnable(GL_AUTO_NORMAL)
     glEnable(GL_POINT_SMOOTH)
     global mouseInteractor
     mouseInteractor = MouseInteractor(.01, 1)
@@ -258,11 +306,13 @@ def init():
 
 glutInit(sys.argv)
 glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-glutInitWindowSize(501, 501)
+glutInitWindowSize(800, 800)
 glutInitWindowPosition(100, 100)
 glutCreateWindow(sys.argv[0])
 init()
 mouseInteractor.registerCallbacks()
 glutDisplayFunc(display)
+glutReshapeFunc(reshape)
+glutKeyboardFunc(keyboard)
 # glutIdleFunc(animationStep)
 glutMainLoop()

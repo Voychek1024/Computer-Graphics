@@ -54,7 +54,7 @@ class MouseInteractor(object):
         elif self.mouseButtonPressed == GLUT_RIGHT_BUTTON:
             rY = deltaX * self.scalingFactorRotation * 0.1
             self.rotationMatrix.addRotation(rY, 0, 0, 1)
-            rX = deltaY * self.scalingFactorRotation * 0.05
+            rX = deltaY * self.scalingFactorRotation * 0.1
             self.rotationMatrix.addRotation(rX, -1, 1, 0)
         self.oldMousePos[0], self.oldMousePos[1] = x, y
         glutPostRedisplay()

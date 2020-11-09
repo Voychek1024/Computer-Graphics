@@ -51,14 +51,14 @@ if __name__ == "__main__":
     xas = list()
     yas = list()
     zas = list()
-    intervals_u_v = 10
+    intervals_u_v = 3
     for u in np.linspace(0.0, 1.0, intervals_u_v):
         for v in np.linspace(0.0, 1.0, intervals_u_v):
             p = casteljau_surface(cp_up, u, v)
             xas.append(p[0])
             yas.append(p[1])
             zas.append(p[2])
-
+    print(len(xas))
     # Draw the two aproximated surfaces
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
