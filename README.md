@@ -13,4 +13,4 @@ For details, please check each folder <br />
 ![status](https://img.shields.io/badge/status-accepted-brightgreen)
 
 [final](https://github.com/Voychek1024/Computer-Graphics/tree/main/final) (due 11.13) <br />
-![status](https://img.shields.io/badge/status-working-yellow)
+![status](https://img.shields.io/badge/status-working(4%2F7)-yellow)
