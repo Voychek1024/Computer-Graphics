@@ -51,7 +51,6 @@ if __name__ == "__main__":
     xas = list()
     yas = list()
     zas = list()
-
     intervals_u_v = 10
     for u in np.linspace(0.0, 1.0, intervals_u_v):
         for v in np.linspace(0.0, 1.0, intervals_u_v):

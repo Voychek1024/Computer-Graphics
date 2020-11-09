@@ -2,6 +2,8 @@ import math
 import sys
 import random
 from time import sleep
+import numpy as np
+
 from final.test.interactionMatrix.mouseInteractor import MouseInteractor
 
 from OpenGL.GLUT import *
@@ -151,14 +153,56 @@ def display_control():
     glEnd()
 
 
+def display_surface():
+    cp = controlPoints
+    xas = list()
+    yas = list()
+    zas = list()
+
+    interval = 10
+    for u in np.linspace(0.0, 1.0, interval):
+        for v in np.linspace(0.0, 1.0, interval):
+            p = casteljau_surface(cp, u, v)
+            xas.append(p[0])
+            yas.append(p[1])
+            zas.append(p[2])
+
+    # Draw the two aproximated surfaces
+    glBegin(GL_LINES)
+    glColor3f(1.0, 1.0, 1.0)
+    for i in range(0, len(xas)):
+        if (i + 1) % interval == 0:
+            continue
+        try:
+            # OpenGL 3d Line
+            glVertex3f(float(xas[i]), float(yas[i]), float(zas[i]))
+            glVertex3f(float(xas[i + 1]), float(yas[i + 1]), float(zas[i + 1]))
+        except IndexError:
+            continue
+    glEnd()
+
+    for j in range(0, len(xas)):
+        glBegin(GL_LINES)
+        glColor3f(1.0, 1.0, 1.0)
+        for k in range(j, interval * interval, interval):
+            try:
+                # OpenGL 3d Line
+                glVertex3f(float(xas[k]), float(yas[k]), float(zas[k]))
+                glVertex3f(float(xas[k + interval]), float(yas[k + interval]), float(zas[k + interval]))
+            except IndexError:
+                continue
+        glEnd()
+
+
 def drag_control(i: int, j: int, mouse):
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
-
+    """
     print(glGetFloatv(GL_PROJECTION_MATRIX))
     print(glGetFloatv(GL_MODELVIEW_MATRIX))
     print(glGetIntegerv(GL_VIEWPORT))
+    """
 
 
 def display():
@@ -185,6 +229,7 @@ def display():
         updateControlPoints()
         run_once = False
     display_control()
+    display_surface()
     drag_control(0, 0, mouseInteractor)
 
     global nPts
