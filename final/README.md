@@ -1,7 +1,7 @@
 # Computer-Graphics
 2020 Autumn Computer Graphics Experiments
 
-## 要求
+## 要求 (预计11.10完成)
 期末报告 <br />
  <br />
 查找资料，学习了解Bezier曲面的知识，实现Bezier曲面的离散生成算法(de Casteljau算法)。 <br />
