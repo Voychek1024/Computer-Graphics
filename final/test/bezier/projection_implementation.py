@@ -16,8 +16,15 @@ model_mat = np.array([[-0.70710677, - 0.4082483, 0.5773503, 0.],
                       [0.70710677, -0.4082483, 0.5773503, 0.],
                       [0., 0.8164966, 0.5773503, 0.],
                       [0., 0., -5.1961527, 1.]])
+view_port = np.array([0, 0, 800, 800])
+mouse_x, mouse_y = 400, 248
 
+"""
 for item in world_coords:
     print("item", item)
-    result = item @ model_mat @ projection_mat.T
+    result = item @ (model_mat @ projection_mat).T * view_port
     print("proj", result)
+"""
+
+
+

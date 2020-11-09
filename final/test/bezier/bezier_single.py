@@ -81,6 +81,33 @@ def updateControlPoints():
 run_once = True
 
 
+def casteljau_curve(points, t):
+    """Use casteljau to compute a point of a Bezier curve given the control
+       points and a fixed parametized t"""
+    p, n = points, len(points)
+    for r in range(1, n):
+        for i in range(n - r):
+            p[i] = (1 - t) * p[i] + t * p[i + 1]
+
+    return p[0]
+
+
+def casteljau_surface(points, u, v):
+    """Given control points of a surface and fixing u and v, compute an
+       interpolated 3d point of the surface"""
+    xis = list()
+    yis = list()
+    zis = list()
+
+    for ps in points:
+        xis.append(casteljau_curve([j[0] for j in ps], u))
+        yis.append(casteljau_curve([j[1] for j in ps], u))
+        zis.append(casteljau_curve([j[2] for j in ps], u))
+
+    return (casteljau_curve(xis, v), casteljau_curve(yis, v),
+            casteljau_curve(zis, v))
+
+
 def show_axis():
     glBegin(GL_LINES)
 
@@ -128,11 +155,10 @@ def drag_control(i: int, j: int, mouse):
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
-    """
+
     print(glGetFloatv(GL_PROJECTION_MATRIX))
     print(glGetFloatv(GL_MODELVIEW_MATRIX))
     print(glGetIntegerv(GL_VIEWPORT))
-    """
 
 
 def display():
