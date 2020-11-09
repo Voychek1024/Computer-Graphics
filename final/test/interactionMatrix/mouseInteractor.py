@@ -56,12 +56,13 @@ class MouseInteractor(object):
             self.rotationMatrix.addRotation(rY, 0, 0, 1)
             rX = deltaY * self.scalingFactorRotation * 0.1
             self.rotationMatrix.addRotation(rX, -1, 1, 0)
+        elif self.mouseButtonPressed == GLUT_LEFT_BUTTON:
+            pass
         self.oldMousePos[0], self.oldMousePos[1] = x, y
         glutPostRedisplay()
 
     def mouseWheel(self, wheel, direction, x, y):
         if self.mouseButtonPressed == GLUT_LEFT_BUTTON:
-            print(x, y)
             self.wheelDirection = direction
         glutPostRedisplay()
 

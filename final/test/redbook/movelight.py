@@ -70,9 +70,9 @@ try:
     from OpenGL.GL import *
     from OpenGL.GLU import *
 except:
-    print '''
+    print('''
 ERROR: PyOpenGL not installed properly.  
-        '''
+        ''')
     sys.exit()
 
 spin = 0

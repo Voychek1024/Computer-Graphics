@@ -217,8 +217,12 @@ spin = 0.0
 
 def drag_control(i: int, j: int, mouse):
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
+        glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
+        print(mouse.oldMousePos)
+
+        glPopMatrix()
     elif mouse.mouseButtonPressed == GLUT_MIDDLE_BUTTON:
         pass
     """
