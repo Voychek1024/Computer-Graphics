@@ -1,26 +1,14 @@
-import datetime
 import math
-import os
-import random
-import time
-from pydoc import ispath
-
-import numpy as np
 import sys
+import random
+from time import sleep
+import numpy as np
 
-from PyQt5.QtCore import QPoint
-from PyQt5.QtGui import QIcon
-from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
+from final.test.interactionMatrix.mouseInteractor import MouseInteractor
 
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-
-from PIL import Image
-from PIL import ImageOps
-
-from final.final_ui import *
-from final.test.interactionMatrix.mouseInteractor import MouseInteractor
 
 
 def generate_control(_nPts: int):
@@ -28,29 +16,23 @@ def generate_control(_nPts: int):
     _xStep = (_xMax - _xMin) / (_nPts - 1)
     _yStep = (_yMax - _yMin) / (_nPts - 1)
     _control = [[[_yMin + y * _yStep, _xMin + x * _xStep, 0.0] for x in range(_nPts)] for y in range(_nPts)]
-    return _control
+    _patch = [[[] for x in range(_nPts)] for y in range(_nPts)]
+    return _control, _patch
 
 
-nPts = 3
-controlPoints = generate_control(nPts)
+nPts = 2
+controlPoints, patch = generate_control(nPts)
+print(controlPoints, patch)
+projectionPoints = []
 
 
-# print(controlPoints)
-
-
-def updateControlPoints(z_axis: list):
+def updateControlPoints():
     """Calculate function values for all 2D grid points."""
-    if not z_axis:
-        for row in controlPoints:
-            for coord in row:
-                coord[2] = random.random()
-    else:
-        i = 0
-        for row in controlPoints:
-            for coord in row:
-                coord[2] = z_axis[i]
-                i += 1
-    # print(controlPoints)
+
+    for row in controlPoints:
+        for coord in row:
+            coord[2] = random.random()
+    print(controlPoints)
 
 
 run_once = True
@@ -100,34 +82,30 @@ def show_axis():
     glEnd()
 
 
-dis_con = True
-
-
 def display_control():
-    if dis_con:
-        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
-        glPointSize(10)
-        glBegin(GL_POINTS)
-        glColor3f(0.0, 1.0, 0.0)
-        for row in controlPoints:
-            for coord in row:
-                glVertex3f(float(coord[0]), float(coord[1]), float(coord[2]))
-        glEnd()
-        glBegin(GL_LINES)
-        glColor3f(1.0, 0.0, 0.0)
-        for row in controlPoints:
-            for i in range(0, nPts - 1):
-                glVertex3f(float(row[i][0]), float(row[i][1]), float(row[i][2]))
-                glVertex3f(float(row[i + 1][0]), float(row[i + 1][1]), float(row[i + 1][2]))
-        glEnd()
-        glBegin(GL_LINES)
-        glColor3f(1.0, 0.0, 0.0)
-        for j in range(0, nPts):
-            for i in range(0, nPts - 1):
-                glVertex3f(float(controlPoints[i][j][0]), float(controlPoints[i][j][1]), float(controlPoints[i][j][2]))
-                glVertex3f(float(controlPoints[i + 1][j][0]), float(controlPoints[i + 1][j][1]),
-                           float(controlPoints[i + 1][j][2]))
-        glEnd()
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
+    glPointSize(10)
+    glBegin(GL_POINTS)
+    glColor3f(0.0, 1.0, 0.0)
+    for row in controlPoints:
+        for coord in row:
+            glVertex3f(float(coord[0]), float(coord[1]), float(coord[2]))
+    glEnd()
+    glBegin(GL_LINES)
+    glColor3f(1.0, 0.0, 0.0)
+    for row in controlPoints:
+        for i in range(0, nPts - 1):
+            glVertex3f(float(row[i][0]), float(row[i][1]), float(row[i][2]))
+            glVertex3f(float(row[i + 1][0]), float(row[i + 1][1]), float(row[i + 1][2]))
+    glEnd()
+    glBegin(GL_LINES)
+    glColor3f(1.0, 0.0, 0.0)
+    for j in range(0, nPts):
+        for i in range(0, nPts - 1):
+            glVertex3f(float(controlPoints[i][j][0]), float(controlPoints[i][j][1]), float(controlPoints[i][j][2]))
+            glVertex3f(float(controlPoints[i + 1][j][0]), float(controlPoints[i + 1][j][1]),
+                       float(controlPoints[i + 1][j][2]))
+    glEnd()
 
 
 def display_surface():
@@ -191,12 +169,13 @@ index_i, index_j = 0, 0
 
 
 def drag_control(i: int, j: int, mouse):
+    glPointSize(25)
+    glBegin(GL_POINTS)
+    glColor3f(1.0, 1.0, 1.0)
+    glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
+    glEnd()
+
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
-        glPointSize(25)
-        glBegin(GL_POINTS)
-        glColor3f(1.0, 1.0, 1.0)
-        glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
-        glEnd()
         glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
@@ -279,6 +258,9 @@ def display():
     mouseInteractor.applyTransformation()
     global run_once
     show_axis()
+    if run_once:
+        updateControlPoints()
+        run_once = False
     display_control()
     display_surface()
     global index_i, index_j
@@ -300,110 +282,15 @@ def init():
     mouseInteractor = MouseInteractor(.01, 1)
 
 
-class MainWindow(QMainWindow, Ui_Window_4):
-    def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
-        self.setupUi(self)
-
-        self.horizontalSlider.setValue(2)
-
-        self.radioButton_1.toggled.connect(self.horizontalSlider.setEnabled)
-        self.radioButton_2.toggled.connect(self.horizontalSlider.setDisabled)
-
-        self.radioButton_1.toggled.connect(self.display_1)
-        self.radioButton_2.toggled.connect(self.display_2)
-
-        self.pushButton_1.clicked.connect(self.reset_control)
-        self.pushButton_2.clicked.connect(self.random_control)
-        self.pushButton_3.clicked.connect(self.read_file)
-        self.pushButton_4.clicked.connect(self.save_plot)
-
-        self.horizontalSlider.valueChanged.connect(self.reset_control)
-
-        self.initUI()
-        self.initGL()
-
-    def initUI(self):
-        self.setWindowTitle("Computer Graphics Final")
-        self.setWindowIcon(QIcon("final/04.png"))
-        self.move(QPoint(920, 100))
-        self.show()
-
-    def initGL(self):
-        glutInit(sys.argv)
-        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
-        glutInitWindowSize(800, 800)
-        glutInitWindowPosition(100, 100)
-        glutCreateWindow(sys.argv[0])
-        init()
-        mouseInteractor.registerCallbacks()
-        glutDisplayFunc(display)
-        glutReshapeFunc(reshape)
-        glutKeyboardFunc(keyboard)
-        # glutIdleFunc(animationStep)
-        glutMainLoop()
-
-    def display_1(self):
-        global dis_con
-        dis_con = True
-        glutPostRedisplay()
-
-    def display_2(self):
-        global dis_con
-        dis_con = False
-        glutPostRedisplay()
-
-    def reset_control(self):
-        global controlPoints, nPts
-        nPts = int(self.horizontalSlider.value()) + 1
-        controlPoints = generate_control(nPts)
-        glutPostRedisplay()
-
-    def random_control(self):
-        global controlPoints, nPts
-        nPts = int(self.horizontalSlider.value()) + 1
-        controlPoints = generate_control(nPts)
-        updateControlPoints([])
-        glutPostRedisplay()
-
-    def read_file(self):
-        fname = QFileDialog.getOpenFileName(self, 'Open File', 'C:\\', "txt files (*.txt)")
-        z_axis = list()
-        if os.path.isfile(fname[0]):
-            with open(fname[0], 'r') as in_file:
-                lines = in_file.readlines()
-                result = math.sqrt(len(lines))
-                if result % 1 == 0:
-                    for line in lines:
-                        z_axis.append(eval(line))
-                    # print(z_axis)
-                    global controlPoints, nPts
-                    self.horizontalSlider.setValue(int(result) - 1)
-                    nPts = int(self.horizontalSlider.value()) + 1
-                    controlPoints = generate_control(nPts)
-                    updateControlPoints(z_axis)
-                    glutPostRedisplay()
-
-    def save_plot(self):
-        glPixelStorei(GL_PACK_ALIGNMENT, 1)
-        data = glReadPixels(0, 0, 800, 800, GL_RGBA, GL_UNSIGNED_BYTE)
-        image = Image.frombytes("RGBA", (800, 800), data)
-        image = ImageOps.flip(image)
-        image.save('final/glut_out_{}.png'.format(time.strftime("%H-%M-%S")), 'PNG')
-        z_axis = list()
-        global controlPoints
-        for row in controlPoints:
-            for coord in row:
-                z_axis.append(coord[2])
-        with open('final/control_points_save.txt', 'w') as out_file:
-            for item in z_axis:
-                out_file.write(str(item))
-                out_file.write('\n')
-
-
-if __name__ == '__main__':
-    app_4 = QApplication(sys.argv)
-    mywin = MainWindow()
-    mywin.setStyleSheet('oxygen')
-    mywin.show()
-    sys.exit(app_4.exec_())
+glutInit(sys.argv)
+glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH)
+glutInitWindowSize(800, 800)
+glutInitWindowPosition(100, 100)
+glutCreateWindow(sys.argv[0])
+init()
+mouseInteractor.registerCallbacks()
+glutDisplayFunc(display)
+glutReshapeFunc(reshape)
+glutKeyboardFunc(keyboard)
+# glutIdleFunc(animationStep)
+glutMainLoop()
