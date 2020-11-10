@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>310</width>
-    <height>600</height>
+    <width>311</width>
+    <height>701</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -282,6 +282,34 @@ Final Object</string>
       </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>530</y>
+      <width>271</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Consolas</family>
+      <pointsize>14</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Guidance:
+鼠标右键——旋转
+鼠标中键——缩放
+鼠标左键+滚轮——修改控制点
+Q——开启GL光照（长按循环旋转）
+E——关闭光照
+L/K——下一个控制点（白色高亮）</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+    </property>
    </widget>
   </widget>
  </widget>

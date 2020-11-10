@@ -14,7 +14,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Window_4(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(310, 600)
+        MainWindow.resize(311, 701)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label_0 = QtWidgets.QLabel(self.centralwidget)
@@ -119,6 +119,14 @@ class Ui_Window_4(object):
         self.radioButton_2.setFont(font)
         self.radioButton_2.setObjectName("radioButton_2")
         self.horizontalLayout.addWidget(self.radioButton_2)
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(20, 530, 271, 161))
+        font = QtGui.QFont()
+        font.setFamily("Consolas")
+        font.setPointSize(14)
+        self.label.setFont(font)
+        self.label.setAlignment(QtCore.Qt.AlignLeading | QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop)
+        self.label.setObjectName("label")
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -147,3 +155,10 @@ class Ui_Window_4(object):
         self.label_3.setText(_translate("MainWindow", "×"))
         self.radioButton_1.setText(_translate("MainWindow", "show"))
         self.radioButton_2.setText(_translate("MainWindow", "hide"))
+        self.label.setText(_translate("MainWindow", "Guidance:\n"
+                                                    "鼠标右键——旋转\n"
+                                                    "鼠标中键——缩放\n"
+                                                    "鼠标左键+滚轮——修改控制点\n"
+                                                    "Q——开启GL光照（长按循环旋转）\n"
+                                                    "E——关闭光照\n"
+                                                    "L/K——下一个控制点（白色高亮）"))

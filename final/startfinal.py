@@ -7,6 +7,7 @@ import time
 import numpy as np
 import sys
 
+from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import QMainWindow, QApplication, QFileDialog
 
@@ -31,6 +32,8 @@ def generate_control(_nPts: int):
 
 nPts = 3
 controlPoints = generate_control(nPts)
+
+
 # print(controlPoints)
 
 
@@ -96,30 +99,34 @@ def show_axis():
     glEnd()
 
 
+dis_con = True
+
+
 def display_control():
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
-    glPointSize(10)
-    glBegin(GL_POINTS)
-    glColor3f(0.0, 1.0, 0.0)
-    for row in controlPoints:
-        for coord in row:
-            glVertex3f(float(coord[0]), float(coord[1]), float(coord[2]))
-    glEnd()
-    glBegin(GL_LINES)
-    glColor3f(1.0, 0.0, 0.0)
-    for row in controlPoints:
-        for i in range(0, nPts - 1):
-            glVertex3f(float(row[i][0]), float(row[i][1]), float(row[i][2]))
-            glVertex3f(float(row[i + 1][0]), float(row[i + 1][1]), float(row[i + 1][2]))
-    glEnd()
-    glBegin(GL_LINES)
-    glColor3f(1.0, 0.0, 0.0)
-    for j in range(0, nPts):
-        for i in range(0, nPts - 1):
-            glVertex3f(float(controlPoints[i][j][0]), float(controlPoints[i][j][1]), float(controlPoints[i][j][2]))
-            glVertex3f(float(controlPoints[i + 1][j][0]), float(controlPoints[i + 1][j][1]),
-                       float(controlPoints[i + 1][j][2]))
-    glEnd()
+    if dis_con:
+        glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA)
+        glPointSize(10)
+        glBegin(GL_POINTS)
+        glColor3f(0.0, 1.0, 0.0)
+        for row in controlPoints:
+            for coord in row:
+                glVertex3f(float(coord[0]), float(coord[1]), float(coord[2]))
+        glEnd()
+        glBegin(GL_LINES)
+        glColor3f(1.0, 0.0, 0.0)
+        for row in controlPoints:
+            for i in range(0, nPts - 1):
+                glVertex3f(float(row[i][0]), float(row[i][1]), float(row[i][2]))
+                glVertex3f(float(row[i + 1][0]), float(row[i + 1][1]), float(row[i + 1][2]))
+        glEnd()
+        glBegin(GL_LINES)
+        glColor3f(1.0, 0.0, 0.0)
+        for j in range(0, nPts):
+            for i in range(0, nPts - 1):
+                glVertex3f(float(controlPoints[i][j][0]), float(controlPoints[i][j][1]), float(controlPoints[i][j][2]))
+                glVertex3f(float(controlPoints[i + 1][j][0]), float(controlPoints[i + 1][j][1]),
+                           float(controlPoints[i + 1][j][2]))
+        glEnd()
 
 
 def display_surface():
@@ -183,13 +190,12 @@ index_i, index_j = 0, 0
 
 
 def drag_control(i: int, j: int, mouse):
-    glPointSize(25)
-    glBegin(GL_POINTS)
-    glColor3f(1.0, 1.0, 1.0)
-    glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
-    glEnd()
-
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
+        glPointSize(25)
+        glBegin(GL_POINTS)
+        glColor3f(1.0, 1.0, 1.0)
+        glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
+        glEnd()
         glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
@@ -303,6 +309,9 @@ class MainWindow(QMainWindow, Ui_Window_4):
         self.radioButton_1.toggled.connect(self.horizontalSlider.setEnabled)
         self.radioButton_2.toggled.connect(self.horizontalSlider.setDisabled)
 
+        self.radioButton_1.toggled.connect(self.display_1)
+        self.radioButton_2.toggled.connect(self.display_2)
+
         self.pushButton_1.clicked.connect(self.reset_control)
         self.pushButton_2.clicked.connect(self.random_control)
         self.pushButton_3.clicked.connect(self.read_file)
@@ -316,6 +325,7 @@ class MainWindow(QMainWindow, Ui_Window_4):
     def initUI(self):
         self.setWindowTitle("Computer Graphics Final")
         self.setWindowIcon(QIcon("final/04.png"))
+        self.move(QPoint(920, 100))
         self.show()
 
     def initGL(self):
@@ -331,6 +341,16 @@ class MainWindow(QMainWindow, Ui_Window_4):
         glutKeyboardFunc(keyboard)
         # glutIdleFunc(animationStep)
         glutMainLoop()
+
+    def display_1(self):
+        global dis_con
+        dis_con = True
+        glutPostRedisplay()
+
+    def display_2(self):
+        global dis_con
+        dis_con = False
+        glutPostRedisplay()
 
     def reset_control(self):
         global controlPoints, nPts
