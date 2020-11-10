@@ -10,6 +10,7 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 
+
 # animationAngle = 0.0
 # frameRate = 60
 # animationTime = 0
@@ -69,6 +70,7 @@ nPts = 3
 controlPoints, patch = generate_control(nPts)
 print(controlPoints, patch)
 projectionPoints = []
+light_gl = False
 
 
 def updateControlPoints():
@@ -154,6 +156,20 @@ def display_control():
 
 
 def display_surface():
+    position = [0.0, 0.0, 1.0, 1.0]
+    if light_gl:
+        print("GL")
+        glEnable(GL_LIGHTING)
+        glEnable(GL_LIGHT0)
+        glPushMatrix()
+        glRotated(spin, spin, 1, 0.0)
+        glLightfv(GL_LIGHT0, GL_POSITION, position)
+        glDisable(GL_LIGHTING)
+        glColor3f(0.0, 1.0, 1.0)
+        glutWireCube(0.1)
+        glPopMatrix()
+        glEnable(GL_LIGHTING)
+
     cp = controlPoints
     xas = list()
     yas = list()
@@ -214,13 +230,12 @@ index_i, index_j = 0, 0
 
 
 def drag_control(i: int, j: int, mouse):
-    glPointSize(25)
-    glBegin(GL_POINTS)
-    glColor3f(1.0, 1.0, 1.0)
-    glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
-    glEnd()
-
     if mouse.mouseButtonPressed == GLUT_LEFT_BUTTON:
+        glPointSize(25)
+        glBegin(GL_POINTS)
+        glColor3f(1.0, 1.0, 1.0)
+        glVertex3f(controlPoints[i][j][0], controlPoints[i][j][1], controlPoints[i][j][2])
+        glEnd()
         glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
@@ -237,30 +252,17 @@ def drag_control(i: int, j: int, mouse):
 
 
 def keyboard(key, x, y):
-    position = [0.0, 0.0, 4.0, 1.0]
     global index_i, index_j
+    global spin, light_gl
     if key == b'q':
-        global spin
-
+        light_gl = True
+        glutPostRedisplay()
         spin += 5.0
         if spin == 360.0:
             spin = 0.0
 
-        glEnable(GL_LIGHTING)
-        glEnable(GL_LIGHT0)
-        glPushMatrix()
-        glRotated(spin, 1, 1, 0.0)
-        glLightfv(GL_LIGHT0, GL_POSITION, position)
-        glDisable(GL_LIGHTING)
-
-        glColor3f(0.0, 1.0, 1.0)
-        glutSolidCube(0.1)
-        glEnable(GL_LIGHTING)
-
-        glPopMatrix()
-        glutPostRedisplay()
-
     elif key == b'e':
+        light_gl = False
         glDisable(GL_LIGHTING)
         glDisable(GL_LIGHT0)
         glutPostRedisplay()
@@ -279,12 +281,15 @@ def keyboard(key, x, y):
             index_j = 0
         glutPostRedisplay()
 
+    elif key == b'r':
+        print("draw initiated")
+
 
 def reshape(w, h):
     glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(45, w / h, 1.0, 100.0)
+    gluPerspective(45, w / h, 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 

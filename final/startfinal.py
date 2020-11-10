@@ -53,9 +53,6 @@ def updateControlPoints(z_axis: list):
     # print(controlPoints)
 
 
-run_once = True
-
-
 def casteljau_curve(points, t):
     """Use casteljau to compute a point of a Bezier curve given the control
        points and a fixed parametized t"""
@@ -101,6 +98,8 @@ def show_axis():
 
 
 dis_con = True
+dis_gl_light = False
+position = [0.0, 0.0, 1.5, 1.0]
 
 
 def display_control():
@@ -131,6 +130,20 @@ def display_control():
 
 
 def display_surface():
+    global position
+    if dis_gl_light:
+        glEnable(GL_LIGHTING)
+        glEnable(GL_LIGHT0)
+        glPushMatrix()
+        glRotated(spin, 1.0, 0.0, 0.0)
+        glLightfv(GL_LIGHT0, GL_POSITION, position)
+        glDisable(GL_LIGHTING)
+        glTranslated(0.0, 0.0, 1.5)
+        glColor3f(0.0, 1.0, 1.0)
+        glutSolidCube(0.1)
+        glEnable(GL_LIGHTING)
+        glPopMatrix()
+
     cp = controlPoints
     xas = list()
     yas = list()
@@ -213,30 +226,17 @@ def drag_control(i: int, j: int, mouse):
 
 
 def keyboard(key, x, y):
-    position = [0.0, 0.0, 4.0, 1.0]
-    global index_i, index_j
+    global index_i, index_j, spin, dis_gl_light
     if key == b'q':
-        global spin
-
         spin += 5.0
         if spin == 360.0:
             spin = 0.0
-
-        glEnable(GL_LIGHTING)
-        glEnable(GL_LIGHT0)
-        glPushMatrix()
-        glRotated(spin, 1, 1, 0.0)
-        glLightfv(GL_LIGHT0, GL_POSITION, position)
-        glDisable(GL_LIGHTING)
-
-        glColor3f(0.0, 1.0, 1.0)
-        glutSolidCube(0.1)
-        glEnable(GL_LIGHTING)
-
-        glPopMatrix()
+        dis_gl_light = True
         glutPostRedisplay()
 
     elif key == b'e':
+        dis_gl_light = False
+        spin = 0.0
         glDisable(GL_LIGHTING)
         glDisable(GL_LIGHT0)
         glutPostRedisplay()
@@ -260,14 +260,14 @@ def reshape(w, h):
     glViewport(0, 0, w, h)
     glMatrixMode(GL_PROJECTION)
     glLoadIdentity()
-    gluPerspective(45, w / h, 1.0, 100.0)
+    gluPerspective(45, w / h, 0.1, 100.0)
     glMatrixMode(GL_MODELVIEW)
     glLoadIdentity()
 
 
 def display():
     """OpenGL display function."""
-    global controlPoints, patch
+    global controlPoints
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
     glPushMatrix()
@@ -277,14 +277,12 @@ def display():
 
     global mouseInteractor
     mouseInteractor.applyTransformation()
-    global run_once
     show_axis()
     display_control()
     display_surface()
     global index_i, index_j
     drag_control(index_i, index_j, mouseInteractor)
     glPopMatrix()
-    global nPts
     glutSwapBuffers()
 
 
