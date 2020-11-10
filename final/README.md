@@ -1,7 +1,7 @@
 # Computer-Graphics
 2020 Autumn Computer Graphics Experiments
 
-## 要求 (预计11.10完成)
+## 要求
 期末报告 <br />
  <br />
 查找资料，学习了解Bezier曲面的知识，实现Bezier曲面的离散生成算法(de Casteljau算法)。 <br />
@@ -15,14 +15,14 @@
 若自己编程实现光照计算，则可获得额外加分 <br />
 
 ## 进度
-0.OpenGL编程、控件、交互攻关 —— 大部完成 <br />
+0.OpenGL编程、控件、交互攻关 —— 已完成 <br />
 1.GUI设计 —— 已完成 <br />
 2.Bezier曲面的离散生成算法(de Casteljau算法) —— 已完成整合 <br />
 3.GUI控件部分整合 —— 已完成整合 <br />
 4.OpenGL交互式（Pan, Zoom, Rotate） —— 已完成整合 <br />
 5.控制点生成、交互 —— 已完成整合 <br />
-6.3D->2D投影变换 —— 已完成 <br />
-7.模型光照、光照函数 —— 进行中 <br />
+6.3D->2D投影变换 —— 已完成整合 <br />
+7.模型光照、光照函数 —— 已完成整合 <br />
 8.数据读入接口 —— 已完成整合 <br />
 9.GUI功能统合、优化 —— 大部完成 <br />
 

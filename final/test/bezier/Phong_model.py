@@ -1,9 +1,9 @@
 import sys
 
-# from OpenGLContext import testingcontext
+from OpenGLContext import testingcontext
 
-# BaseContext = testingcontext.getInteractive()
-# from OpenGLContext.arrays import array
+BaseContext = testingcontext.getInteractive()
+from OpenGLContext.arrays import array
 from OpenGL import GL as gl
 from OpenGL.arrays import vbo
 from OpenGL.GL.shaders import compileProgram, compileShader
@@ -85,9 +85,9 @@ VERTEX_DATA = [
 
 
 class TestContext(BaseContext):
-    '''
+    """
     creates a simple vertex shader
-    '''
+    """
 
     def OnInit(self):
         try:
