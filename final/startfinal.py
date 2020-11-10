@@ -1,12 +1,10 @@
-import datetime
-import math
 import os
-import random
-import time
-from pydoc import ispath
-
-import numpy as np
 import sys
+import time
+
+import math
+import random
+import numpy as np
 
 from PyQt5.QtCore import QPoint
 from PyQt5.QtGui import QIcon
@@ -35,9 +33,6 @@ nPts = 3
 controlPoints = generate_control(nPts)
 
 
-# print(controlPoints)
-
-
 def updateControlPoints(z_axis: list):
     """Calculate function values for all 2D grid points."""
     if not z_axis:
@@ -50,7 +45,6 @@ def updateControlPoints(z_axis: list):
             for coord in row:
                 coord[2] = z_axis[i]
                 i += 1
-    # print(controlPoints)
 
 
 def casteljau_curve(points, t):
@@ -81,6 +75,8 @@ def casteljau_surface(points, u, v):
 
 
 def show_axis():
+    glDisable(GL_LIGHTING)
+    glDisable(GL_LIGHT0)
     glBegin(GL_LINES)
 
     glColor3f(1.0, 0.0, 0.0)
@@ -133,6 +129,7 @@ def display_surface():
     global position
     if dis_gl_light:
         glEnable(GL_LIGHTING)
+        glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GLU_TRUE)
         glEnable(GL_LIGHT0)
         glPushMatrix()
         glRotated(spin, 1.0, 0.0, 0.0)
@@ -213,13 +210,6 @@ def drag_control(i: int, j: int, mouse):
         glPushMatrix()
         controlPoints[i][j][2] += mouse.wheelDirection * 0.1
         mouse.wheelDirection = 0
-        # gluProject()
-        """
-        print(mouse.oldMousePos)
-        print(glGetFloatv(GL_PROJECTION_MATRIX))
-        print(glGetFloatv(GL_MODELVIEW_MATRIX))
-        print(glGetIntegerv(GL_VIEWPORT))
-        """
         glPopMatrix()
     elif mouse.mouseButtonPressed == GLUT_MIDDLE_BUTTON:
         pass
@@ -266,7 +256,6 @@ def reshape(w, h):
 
 
 def display():
-    """OpenGL display function."""
     global controlPoints
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
@@ -278,8 +267,8 @@ def display():
     global mouseInteractor
     mouseInteractor.applyTransformation()
     show_axis()
-    display_control()
     display_surface()
+    display_control()
     global index_i, index_j
     drag_control(index_i, index_j, mouseInteractor)
     glPopMatrix()
@@ -287,7 +276,6 @@ def display():
 
 
 def init():
-    """Glut init function."""
     glClearColor(0, 0, 0, 1)
     glShadeModel(GL_SMOOTH)
     glEnable(GL_DEPTH_TEST)
