@@ -25,10 +25,12 @@ PyOpenGL / PyOpenGL-accelerate (for final) <br />
 pip3 install PyQt5 PyQt5-sip PyQt5-stubs pyqtgraph matplotlib numpy PyOpenGL PyOpenGL-accelerate
 ```
 
-If you meet strange error as such, 
+If you meet strange errors as such, 
 ```
 NullFunctionError: Attempt to call an undefined function glutInit, check for bool(glutInit) before calling
 ```
 try the link below.
 
-https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyopengl (Unofficial Windows Binaries for Python Extension Packages) 
+https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyopengl
+
+(Unofficial Windows Binaries for Python Extension Packages) 
