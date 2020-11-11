@@ -12,7 +12,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setupUi(self)
-        self.label_4.setText(QDateTime.currentDateTime().toString('yyyy.MM.dd'))
+        self.label_4.setText("当前日期: {}".format(QDateTime.currentDateTime().toString('yyyy.MM.dd')))
         self.pushButton_1.clicked.connect(self.execute_1)
         self.pushButton_2.clicked.connect(self.execute_2)
         self.pushButton_3.clicked.connect(self.execute_3)
