@@ -19,7 +19,7 @@ For details, please check each folder <br />
 PyQt5 / PyQt5-sip / PyQt5-stubs <br />
 pyqtgraph (for ex01) <br />
 matplotlib / numpy (for ex02 / ex03) <br />
-PyOpenGL / PyOpenGL-accelerate <br />
+PyOpenGL / PyOpenGL-accelerate (for final) <br />
 ### Installation
 ```bash
 pip3 install PyQt5 PyQt5-sip PyQt5-stubs pyqtgraph matplotlib numpy PyOpenGL PyOpenGL-accelerate
